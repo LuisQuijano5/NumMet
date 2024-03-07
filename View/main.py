@@ -9,6 +9,7 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+    print("hopanskla")
 
 if __name__ == '__main__':
     main()
