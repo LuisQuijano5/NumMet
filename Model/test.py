@@ -24,12 +24,12 @@ def gauss_jordan(A):
     return x, state
 
 
-A = [[2, 1, 5], [4, 4, 6]]
+#A = [[2, 1, 5], [4, 4, 6]]
 #A = [[1, 1, 2], [3, -5, -2]]
-solution, state = gauss_jordan(A) #tuple
-print("Solution:", solution)
-print("State after each iteration:")
-for i, matrix in enumerate(state):
-    print(f"Iteration {i+1}:")
-    for row in matrix:
-        print(row)
+#solution, state = gauss_jordan(A) #tuple
+#print("Solution:", solution)
+#print("State after each iteration:")
+#for i, matrix in enumerate(state):
+#    print(f"Iteration {i+1}:")
+#    for row in matrix:
+#        print(row)
