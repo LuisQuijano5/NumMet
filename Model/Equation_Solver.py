@@ -1,18 +1,19 @@
+import numpy as np
+import scipy as sp
 import sympy
-from sympy import Symbol
+from sympy import log
 import sympy as sym
+
 class Function:
     def __init__(self, name, expression):#Defines the function
         self.name = name
         self.expression = sym.parse_expr(expression)
-        self.x = Symbol("x")
         #self.error = error # %
 
     def evaluate(self, x):
+        sympy.plot(self.expression) #Function grapher
         return self.expression.subs(sym.Symbol('x'), x)
 
-    def plot(self):# Graph the Function
-        sympy.plot(self.expression, title=f"Gráfica de {self.name}")
 class Application_Test:
     def __init__(self):
         self.function = None
@@ -36,5 +37,4 @@ class Application_Test:
 
 app = Application_Test()
 app.init()
-app.function.plot()
 app.show_result()

@@ -5,21 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/BiseccionView.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/Gauss-JordanView.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/Gauss-SeidelView.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/MainWindow.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/MenuMethodsWiindow.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/SecantView.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/View/styleSheet.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Model/GaussJordan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Model/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/View/Gauss.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/NumMet.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/NumMet.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/View/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Equation_Solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Equation_Solver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/MainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/MainModel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +25,6 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
-        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -52,14 +46,12 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "Python.BiseccionView.executor": "Run",
-    "Python.MainWindow.executor": "Run",
-    "Python.MenuMethodsWiindow.executor": "Run",
+    "Python.Gauss.executor": "Run",
     "Python.SecantView.executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
-    "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -72,7 +64,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
@@ -87,11 +79,6 @@
       <workItem from="1709816235551" duration="1022000" />
       <workItem from="1709831463985" duration="23000" />
       <workItem from="1709832173995" duration="846000" />
-      <workItem from="1710080637834" duration="10502000" />
-      <workItem from="1710165419497" duration="636000" />
-      <workItem from="1710172154129" duration="426000" />
-      <workItem from="1710175162855" duration="1217000" />
-      <workItem from="1710204415427" duration="605000" />
     </task>
     <servers />
   </component>
@@ -113,10 +100,12 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/NumMet$MainWindow.coverage" NAME="MainWindow Coverage Results" MODIFIED="1710165449449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
-    <SUITE FILE_PATH="coverage/NumMet$MenuMethodsWiindow.coverage" NAME="MenuMethodsWiindow Coverage Results" MODIFIED="1710175738139" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
-    <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710176352660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
-    <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710204657737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
-    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832575126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+    <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710207306198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1709837124967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+    <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710207344371" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+    <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1709956811744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+    <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+    <SUITE FILE_PATH="coverage/NumMet$Gauss.coverage" NAME="Gauss Coverage Results" MODIFIED="1710207436472" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
   </component>
 </project>
