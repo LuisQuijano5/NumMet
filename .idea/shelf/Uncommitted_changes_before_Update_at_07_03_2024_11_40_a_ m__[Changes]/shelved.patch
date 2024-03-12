@@ -1,0 +1,18 @@
+Index: Modules/main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\n\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n    pass\r\n\r\ndef main():\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    window = MainWindow()\r\n    window.show()\r\n    sys.exit(app.exec_())\r\n\r\nif __name__ == '__main__':\r\n    main()
+===================================================================
+diff --git a/Modules/main.py b/Modules/main.py
+--- a/Modules/main.py	
++++ b/Modules/main.py	
+@@ -8,7 +8,7 @@
+     app = QtWidgets.QApplication(sys.argv)
+     window = MainWindow()
+     window.show()
+-    sys.exit(app.exec_())
++    sys.exit(app.exec())
+ 
+ if __name__ == '__main__':
+     main()
+\ No newline at end of file
