@@ -1,40 +1,42 @@
-import numpy as np
-import scipy as sp
 import sympy
-from sympy import log
+from sympy import Symbol
 import sympy as sym
 
 class Function:
     def __init__(self, name, expression):#Defines the function
         self.name = name
         self.expression = sym.parse_expr(expression)
+        self.x = Symbol("x")
         #self.error = error # %
 
     def evaluate(self, x):
-        sympy.plot(self.expression) #Function grapher
         return self.expression.subs(sym.Symbol('x'), x)
+
+    def plot(self):# Graph the Function
+        sympy.plot(self.expression, title=f"Gráfica de {self.name}")
 
 class Application_Test:
     def __init__(self):
         self.function = None
         self.value_x = None
-
     def init(self):
         #Enter the function and the initial value
         name_function = input("Introduzca el nombre de la función: ")
         expression_function = input("Introduzca la expresión de la función: ")
         self.function = Function(name_function, expression_function)#Stores object class Function
-        self.value_x = float(input("Introduzca el valor de x: "))
-
-    def show_result(self):
-        result = self.function.evaluate(self.value_x)
+        # self.value_x = float(input("Introduzca el valor de x: "))  # Comentamos esta línea para evitar que se solicite el valor de x
+    def show_result(self, value_x):  # Ahora aceptamos el valor de x como argumento
+        result = self.function.evaluate(value_x)
         # Simplifica la expresión
         result = sympy.simplify(result)
         # Si la simplificación no elimina el logaritmo, convierte a número decimal
         if isinstance(result, sympy.Expr):
             result = sympy.N(result, 7)#Returns 6 decimal places after point
-        print(f"El resultado de f({self.value_x}) es {result}")
+        print(f"El resultado de f({value_x}) es {result}")
 
-app = Application_Test()
-app.init()
-app.show_result()
+# Aquí eliminamos el código que solicita y muestra el valor de x y el resultado de f(x)
+
+# app = Application_Test()
+# app.init()
+# app.function.plot()
+# app.show_result()
