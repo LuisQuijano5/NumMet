@@ -1,6 +1,12 @@
 import sys
 from PySide6 import QtWidgets
 from PySide6   import QtCore
+import os
+
+# Obtener la ruta del directorio actual del script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+
 with open('styleSheet.css', 'r') as f:
     stylesheet = f.read()
 
