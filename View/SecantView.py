@@ -2,7 +2,7 @@ import sys
 from PySide6 import QtWidgets
 from PySide6 import QtCore
 import os
-
+"""""
 # Obtener la ruta del directorio actual del script
 current_dir = os.path.dirname(os.path.abspath(__file__))
 stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
@@ -10,7 +10,7 @@ stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
 # Abrir el archivo CSS
 with open(stylesheet_path, 'r') as f:
     stylesheet = f.read()
-
+"""""
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -18,6 +18,13 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.setWindowTitle("Método Secante")
         self.setGeometry(100, 100, 800, 600)
+
+        # Cargar los estilos CSS
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+        with open(stylesheet_path, 'r') as f:
+            stylesheet = f.read()
+        self.setStyleSheet(stylesheet)
 
         # Crear layout principal
         layout = QtWidgets.QVBoxLayout()
@@ -68,9 +75,9 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addLayout(layout_error)
 
         # Boton Calcular
-        button_calcular = QtWidgets.QPushButton('Calcular')
+        self.button_calcular = QtWidgets.QPushButton('Calcular')
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(button_calcular)
+        button_layout.addWidget(self.button_calcular)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         layout.addLayout(button_layout)
@@ -95,13 +102,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         layout.addWidget(self.tabla_resultados)
 
-        # Botón "Continuar"
-        button_graficar = QtWidgets.QPushButton("Graficar")
-        button_volverMenu = QtWidgets.QPushButton("Menu")
+        # Botón "Continuar" y "Graficar"
+        self.button_graficar = QtWidgets.QPushButton("Graficar")
+        self.button_volverMenu = QtWidgets.QPushButton("Menu")
         # Layout para botones volver al Menu y Graficar
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(button_volverMenu)
-        button_layout.addWidget(button_graficar)
+        button_layout.addWidget(self.button_volverMenu)
+        button_layout.addWidget(self.button_graficar)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         layout.addLayout(button_layout)
@@ -114,7 +121,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(stylesheet)
     ventana = MainWindow()
     ventana.show()
     sys.exit(app.exec())
