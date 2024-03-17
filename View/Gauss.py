@@ -2,7 +2,8 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 import sys
 
-from PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton, QSpinBox, QMessageBox
+from PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton, QSpinBox, QMessageBox, QScrollArea
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, title, controller):
@@ -13,6 +14,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         central_widget = QWidget()
         central_widget.setContentsMargins(0, 0, 0, 0)
+        #central_widget.setGeometry(300, 300, 600, 600)
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
 
@@ -91,6 +93,9 @@ class MainWindow(QtWidgets.QMainWindow):
         return container
 
     def buildMain(self, num_rows, num_cols):
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+
         layout = QtWidgets.QGridLayout()
         layout.setHorizontalSpacing(2)
         layout.setVerticalSpacing(2)
@@ -126,7 +131,10 @@ class MainWindow(QtWidgets.QMainWindow):
         container = QWidget()
         container.setObjectName('container_main')
         container.setLayout(layout)
-        return container
+        scroll_area.setWidget(container)
+        #scroll_area.setGeometry(100, 100, 800, 800)
+
+        return scroll_area
 
     def buildTableOptions(self):
         layout = QtWidgets.QHBoxLayout()
@@ -152,18 +160,6 @@ class MainWindow(QtWidgets.QMainWindow):
         popup.setWindowTitle("Warning")
         popup.exec()
 
-    def setAppStyles(self):
-        self.app.setStyleSheet("* {"
-                          "font: 10px 'Helvetica'; } "
-                          "#title_label { font-size: 25px; font-weight: 700; }"
-                          "QPushButton { "
-                          "background-color: black; "
-                          "border-radius: 10px;"
-                          "color: white;"
-                          "font-size: 15px;"
-                          "font-weight: 700; }"
-                          "#container_top { "
-                          "background-color: #DDDDDD; }"
-                          "QPushButton:hover { background-color: #777777;}")
+
 
 

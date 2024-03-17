@@ -35,6 +35,8 @@ class GaussJordanController:
         self.view = MainWindow("Gauss Jordan", self)
         self.setAppStyles()
 
+        self.view.resize(800, 600)
+
         self.scroll_area = QScrollArea()  # Create a QScrollArea
         self.scroll_area.setWidgetResizable(True)  # Allow scrolling
 
