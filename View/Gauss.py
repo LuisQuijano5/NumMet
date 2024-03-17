@@ -4,12 +4,15 @@ import sys
 
 from PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton, QSpinBox, QMessageBox
 import Controller.GaussJordan_Controller as controller
+with open('styleSheet.css', 'r') as f:
+    stylesheet = f.read()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.gaussjordan = controller.GaussJordanController(self)
         self.setupUi()
+        self.setGeometry(100, 100, 800, 600)
 
         central_widget = QWidget()
         central_widget.setContentsMargins(0, 0, 0, 0)
@@ -157,26 +160,14 @@ class MainWindow(QtWidgets.QMainWindow):
         popup.setWindowTitle("Warning")
         popup.exec()
 
-def setAppStyles():
-    app.setStyleSheet("* {"
-                      "font: 10px 'Helvetica'; } "
-                      "#title_label { font-size: 25px; font-weight: 700; }"
-                      "QPushButton { "
-                      "background-color: black; "
-                      "border-radius: 10px;"
-                      "color: white;"
-                      "font-size: 15px;"
-                      "font-weight: 700; }"
-                      "#container_top { "
-                      "background-color: #DDDDDD; }"
-                      "QPushButton:hover { background-color: #777777;}" )
+
 
 def main():
-    setAppStyles()
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyleSheet(stylesheet)
     main()

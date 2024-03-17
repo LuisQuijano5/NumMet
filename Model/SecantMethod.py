@@ -1,3 +1,4 @@
+
 from .Equation_Solver import Function
 
 class SecantSolver:
