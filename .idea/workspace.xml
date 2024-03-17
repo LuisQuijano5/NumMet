@@ -5,14 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Model/Bisection_Method.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Controller/Secant_Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/Secant_Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Equation_Solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Equation_Solver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/SecantMethod.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/SecantMethod.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/View/BiseccionView.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/BiseccionView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/MainWindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/MenuMethodsWiindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/MenuMethodsWiindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/SecantView.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/SecantView.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

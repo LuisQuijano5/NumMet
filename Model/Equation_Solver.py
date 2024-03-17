@@ -3,9 +3,9 @@ from sympy import Symbol
 import sympy as sym
 
 class Function:
-    def __init__(self, name, expression):#Defines the function
-        self.name = name
-        self.expression = sym.parse_expr(expression)
+    def __init__(self, expression):#Defines the function
+        self.name = "f(x)"
+        self.expression = sym.sympify(expression)
         self.x = Symbol("x")
         #self.error = error # %
 
@@ -21,9 +21,8 @@ class Application_Test:
         self.value_x = None
     def init(self):
         #Enter the function and the initial value
-        name_function = input("Introduzca el nombre de la función: ")
         expression_function = input("Introduzca la expresión de la función: ")
-        self.function = Function(name_function, expression_function)#Stores object class Function
+        self.function = Function(expression_function)#Stores object class Function
         # self.value_x = float(input("Introduzca el valor de x: "))  # Comentamos esta línea para evitar que se solicite el valor de x
     def show_result(self, value_x):  # Ahora aceptamos el valor de x como argumento
         result = self.function.evaluate(value_x)
