@@ -46,6 +46,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         help_button = QtWidgets.QPushButton(' ? ')
         return_button = QtWidgets.QPushButton(' Return ')
+        """
+        rebo adicione los metodos estos para que erick trabaje
+        asegurate de ponerlo en tu controlador despues del init para
+        que trabaje mas facil erick
+        """
+        help_button.pressed.connect(self.controller.help)
+        return_button.pressed.connect(self.controller.return_to_menu)
 
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(return_button, alignment=Qt.AlignLeft)
@@ -62,7 +69,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #label_noeq = QtWidgets.QLabel('Number of equations')
 
         self.spin_novar = QtWidgets.QSpinBox()
-        self.spin_novar.setRange(2, 50)
+        self.spin_novar.setRange(2, 26)
         self.spin_novar.setFixedSize(80, 32)
         #self.spin_noeq = QtWidgets.QSpinBox()
         #self.spin_noeq.setRange(2, self.spin_novar.value())
@@ -105,9 +112,12 @@ class MainWindow(QtWidgets.QMainWindow):
             for col in range(num_cols):
                 label = QtWidgets.QLabel(f"x{col + 1}")
                 label.setStyleSheet("font-size: 15px; font-weight: bold")
-                spin_box = QtWidgets.QSpinBox()
+                spin_box = QtWidgets.QDoubleSpinBox()
                 spin_box.setMinimum(-1000)
-                spin_box.setFixedSize(60, 24)
+                spin_box.setMaximum(1000)
+                spin_box.setFixedSize(112, 36)
+                spin_box.setDecimals(3)
+                spin_box.setStyleSheet("QDoubleSpinBox { font-size: 16px; }")
                 spin_aux.append(spin_box)
 
                 container = QtWidgets.QWidget()
@@ -121,8 +131,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
             equals_label = QtWidgets.QLabel("=")
             equals_label.setStyleSheet("font-size: 15px; font-weight: bold")
-            extra_spin_box = QtWidgets.QSpinBox()
-            extra_spin_box.setFixedSize(60, 24)
+            extra_spin_box = QtWidgets.QDoubleSpinBox()
+            extra_spin_box.setMinimum(-1000)
+            extra_spin_box.setMaximum(1000)
+            extra_spin_box.setFixedSize(112, 36)
+            extra_spin_box.setDecimals(3)
+            extra_spin_box.setStyleSheet("QDoubleSpinBox { font-size: 16px; }")
             spin_aux.append(extra_spin_box)
             layout.addWidget(equals_label, row, num_cols * 2)
             layout.addWidget(extra_spin_box, row, num_cols * 2 + 1)

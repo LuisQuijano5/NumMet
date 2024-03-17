@@ -7,7 +7,7 @@ import sys
 
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea, QHBoxLayout
 
 from Model.test import gauss_jordan
 from View.Gauss import MainWindow
@@ -16,15 +16,25 @@ class MatrixWidget(QWidget):
     def __init__(self, matrix):
         super().__init__()
         layout = QVBoxLayout()
+        #layout.setSpacing(50)
         for row in matrix:
-            row_str = "   ".join(str(entry) for entry in row)
-            label = QLabel(row_str)
-            label.setStyleSheet("QLabel {font-weight: bold; font-size: 10px;}")
-            label.setMinimumSize(15, 15)
-            layout.addWidget(label)
+            row_layout = QHBoxLayout()
+            row_layout.setSpacing(25)
+            for entry in row:
+                label = QLabel(str(entry))
+                label.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
+                label.setMinimumSize(15, 15)
+                row_layout.addWidget(label)
+            layout.addLayout(row_layout)
         self.setLayout(layout)
 
 class GaussJordanController:
+    """
+    erick usa estos 3 metodos para adicionar el manual "help", regresar al menu
+    y este primero para conectar este conector con el boton de auss jordan en el menu
+    que se cree un objeto o algo asi y cierras la otra ventana. y que el return pues cierre
+    esta y aparexca el menu again :)
+    """
     def __init__(self):
         self.matrix_widgets = []
         self.rows = 2
@@ -53,6 +63,12 @@ class GaussJordanController:
 
         self.view.show()
         sys.exit(self.app.exec())
+
+    def help(self):
+        print("hola erick aqui lo del manual :)")
+
+    def return_to_menu(self):
+        print("hola erick aqui cierras esta venta y que se abra menu")
 
     def updateCols(self, cols):
         if self.cols != cols and cols >= 2 and cols < 100:
@@ -109,31 +125,35 @@ class GaussJordanController:
         for i in self.spin_matrix:
             aux = []
             for j in i:
-                aux.append(int(j.value()))
+                aux.append(j.value())
             if(not self.check_row(aux)): return
             self.matrix.append(aux)
 
         for i in self.matrix:
             print(i)
 
-        solution, state = gauss_jordan(self.matrix)
-        print("Solution:", solution)
-        print("State after each iteration:")
-        for i, matrix in enumerate(state):
-           print(f"Iteration {i+1}:")
-           for row in matrix:
-               print(row)
+        try:
+            solution, state = gauss_jordan(self.matrix)
+        except:
+            self.view.warning("Check your equations please, be sure to not enter a singular matrix")
+            return
+        #print("Solution:", solution)
+        #print("State after each iteration:")
+        #for i, matrix in enumerate(state):
+        #   print(f"Iteration {i+1}:")
+        #   for row in matrix:
+        #       print(row)
         
-        self.createResults(state)
+        self.createResults(solution, state)
 
-    def createResults(self, list):
-        self.updateResults(list)
+    def createResults(self, solution, list):
+        self.updateResults(solution, list)
         self.view.stacked_layout.setCurrentIndex(1)
 
     def goMain(self):
         self.view.stacked_layout.setCurrentIndex(0)
 
-    def updateResults(self, list):
+    def updateResults(self, solution, list):
         #clear view
         for matrix_widget in self.matrix_widgets:
             matrix_widget.setParent(None)
@@ -143,6 +163,20 @@ class GaussJordanController:
             matrix_widget = MatrixWidget(matrix)
             self.results_view.addWidget(matrix_widget)
             self.matrix_widgets.append(matrix_widget)
+
+        x_values = QHBoxLayout()
+        x_values.setSpacing(15)
+        x_values_container = QWidget()
+        x_values_container.setStyleSheet("background-color: #dddddd")
+        for i, x in enumerate(solution):
+            label = QLabel(f"x{i+1}: " + str(x))
+            label.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
+            x_values.addWidget(label)
+        x_values_container.setLayout(x_values)
+        self.matrix_widgets.append(x_values_container)
+        self.results_view.addWidget(x_values_container)
+
+
 
 
 def main():
