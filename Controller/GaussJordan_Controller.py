@@ -1,20 +1,68 @@
+"""
+to do:
+resize window when less eq
+format solution when a list is returned
+"""
+import sys
+
+from PySide6 import QtWidgets
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea
+
 from Model.test import gauss_jordan
+from View.Gauss import MainWindow
+
+class MatrixWidget(QWidget):
+    def __init__(self, matrix):
+        super().__init__()
+        layout = QVBoxLayout()
+        for row in matrix:
+            row_str = "   ".join(str(entry) for entry in row)
+            label = QLabel(row_str)
+            label.setStyleSheet("QLabel {font-weight: bold; font-size: 10px;}")
+            label.setMinimumSize(15, 15)
+            layout.addWidget(label)
+        self.setLayout(layout)
+
 class GaussJordanController:
-    def __init__(self, view):
-        self.view = view
+    def __init__(self):
+        self.matrix_widgets = []
         self.rows = 2
         self.cols = 2
         self.spin_matrix = []
+        #rebo: conecta asi tu view en tu controller, mandale el titulo y self
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.view = MainWindow("Gauss Jordan", self)
+        self.setAppStyles()
+
+        self.scroll_area = QScrollArea()  # Create a QScrollArea
+        self.scroll_area.setWidgetResizable(True)  # Allow scrolling
+
+        self.results_container = QWidget()
+        self.results_view = QVBoxLayout()
+        self.results_view.setAlignment(Qt.AlignCenter)
+        return_button = QPushButton("Return")
+        return_button.clicked.connect(self.goMain)
+        self.results_view.addWidget(return_button)
+        self.results_container.setLayout(self.results_view)
+
+        self.scroll_area.setWidget(self.results_container)  # Set widget to scroll area
+        self.view.stacked_layout.addWidget(self.scroll_area)
+
+        self.view.show()
+        sys.exit(self.app.exec())
 
     def updateCols(self, cols):
-        if self.cols != cols and cols > 2 and cols < 100:
+        if self.cols != cols and cols >= 2 and cols < 100:
             self.cols = int(cols)
+            self.rows = int(cols)
+            #self.view.spin_noeq.setRange(2, cols)
             self.rebuild()
 
-    def updateRows(self, rows):
-        if self.rows != rows and rows > 2 and rows < 100:
-            self.rows = int(rows)
-            self.rebuild()
+#    def updateRows(self, rows):
+#        if self.rows != rows and rows >= 2 and rows < 100:
+#            self.rows = int(rows)
+#            self.rebuild()
 
     def rebuild(self):
         self.spin_matrix = []
@@ -28,6 +76,32 @@ class GaussJordanController:
             for j in i:
                 j.setValue(0)
 
+    def check_row(self, row):
+        for i in row:
+            if i != 0: return True
+        self.view.warning("Please enter at least one value diff from zero in each equation.\n"
+                          "The table will be restored")
+        self.rebuild()
+        return False
+
+    def setAppStyles(self):
+        self.app.setStyleSheet("* {"
+                          "font: 10px 'Helvetica'; } "
+                          "#title_label { font-size: 25px; font-weight: 700; }"
+                          "QPushButton { "
+                          "background-color: black; "
+                          "border-radius: 10px;"
+                          "color: white;"
+                          "font-size: 15px;"
+                          "font-weight: 700; }"
+                          "#container_top { "
+                          "background-color: #DDDDDD; }"
+                          "QPushButton:hover { background-color: #777777;}")
+
+
+    """
+    UNIQUE TO GAUSS JORDAN
+    """
     def solve(self):
         self.matrix = []
         for i in self.spin_matrix:
@@ -47,12 +121,30 @@ class GaussJordanController:
            print(f"Iteration {i+1}:")
            for row in matrix:
                print(row)
+        
+        self.createResults(state)
 
-    def check_row(self, row):
-        for i in row:
-            if i != 0: return True
-        self.view.warning("Please enter at least one value diff from zero in each equation.\n"
-                          "The table will be restored")
-        self.rebuild()
-        return False
+    def createResults(self, list):
+        self.updateResults(list)
+        self.view.stacked_layout.setCurrentIndex(1)
 
+    def goMain(self):
+        self.view.stacked_layout.setCurrentIndex(0)
+
+    def updateResults(self, list):
+        #clear view
+        for matrix_widget in self.matrix_widgets:
+            matrix_widget.setParent(None)
+
+        # Create and add new matrix widgets
+        for matrix in list:
+            matrix_widget = MatrixWidget(matrix)
+            self.results_view.addWidget(matrix_widget)
+            self.matrix_widgets.append(matrix_widget)
+
+
+def main():
+    GaussJordanController()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,863 @@
+Index: View/Gauss.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from PySide6 import QtWidgets\r\nfrom PySide6.QtCore import Qt\r\nimport sys\r\n\r\nfrom PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton, QSpinBox, QMessageBox\r\nimport Controller.GaussJordan_Controller as controller\r\n\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.gaussjordan = controller.GaussJordanController(self)\r\n        self.setupUi()\r\n\r\n        central_widget = QWidget()\r\n        central_widget.setContentsMargins(0, 0, 0, 0)\r\n        central_widget.setLayout(self.stacked_layout)\r\n        self.setCentralWidget(central_widget)\r\n\r\n    def setupUi(self):\r\n        self.stacked_layout = QStackedLayout()\r\n        view = QWidget()\r\n        body = QtWidgets.QVBoxLayout()\r\n\r\n        body.addWidget(self.buildTop())\r\n        body.addWidget(self.buildNo())\r\n\r\n        self.tableLayout = QStackedLayout()\r\n        self.tableLayout.addWidget(self.buildMain(2, 2))\r\n        tablecontainer = QWidget()\r\n        tablecontainer.setLayout(self.tableLayout)\r\n        body.addWidget(tablecontainer)\r\n\r\n        body.addWidget(self.buildTableOptions())\r\n\r\n        view.setLayout(body)\r\n        self.stacked_layout.addWidget(view)\r\n\r\n    def buildTop(self):\r\n        title_label = QtWidgets.QLabel()\r\n        title_label.setText('Gauss-Jordan')\r\n        title_label.setObjectName('title_label')\r\n\r\n        help_button = QtWidgets.QPushButton(' ? ')\r\n        return_button = QtWidgets.QPushButton(' Return ')\r\n\r\n        layout = QtWidgets.QHBoxLayout()\r\n        layout.addWidget(return_button, alignment=Qt.AlignLeft)\r\n        layout.addWidget(title_label, alignment=Qt.AlignCenter)\r\n        layout.addWidget(help_button, alignment=Qt.AlignRight)\r\n\r\n        container = QWidget()\r\n        container.setObjectName('container_top')\r\n        container.setLayout(layout)\r\n        return container\r\n\r\n    def buildNo(self):\r\n        label_novar = QtWidgets.QLabel('Number of variables')\r\n        label_noeq = QtWidgets.QLabel('Number of equations')\r\n\r\n        spin_novar = QtWidgets.QSpinBox()\r\n        spin_novar.setRange(2, 50)\r\n        spin_novar.setFixedSize(80, 32)\r\n\r\n        spin_noeq = QtWidgets.QSpinBox()\r\n        spin_noeq.setRange(2, 50)\r\n        spin_noeq.setFixedSize(80, 32)\r\n\r\n        spin_novar.valueChanged.connect(lambda value: self.gaussjordan.updateCols(value))\r\n        spin_noeq.valueChanged.connect(lambda value: self.gaussjordan.updateRows(value))\r\n\r\n        vbox_novar = QtWidgets.QVBoxLayout()\r\n        vbox_novar.addWidget(label_novar)\r\n        vbox_novar.addWidget(spin_novar)\r\n        container_novar = QtWidgets.QWidget()\r\n        container_novar.setLayout(vbox_novar)\r\n\r\n        vbox_noeq = QtWidgets.QVBoxLayout()\r\n        vbox_noeq.addWidget(label_noeq)\r\n        vbox_noeq.addWidget(spin_noeq)\r\n        container_noeq = QtWidgets.QWidget()\r\n        container_noeq.setLayout(vbox_noeq)\r\n\r\n        layout = QtWidgets.QHBoxLayout()\r\n        layout.addWidget(container_novar)\r\n        layout.addWidget(container_noeq)\r\n\r\n        container = QWidget()\r\n        container.setObjectName('container_center')\r\n        container.setLayout(layout)\r\n        return container\r\n\r\n    def buildMain(self, num_rows, num_cols):\r\n        layout = QtWidgets.QGridLayout()\r\n        layout.setHorizontalSpacing(2)\r\n        layout.setVerticalSpacing(2)\r\n\r\n        for row in range(num_rows):\r\n            spin_aux = []\r\n            for col in range(num_cols):\r\n                label = QtWidgets.QLabel(f\"x {col + 1}\")\r\n                label.setStyleSheet(\"font-size: 15px; font-weight: bold\")\r\n                spin_box = QtWidgets.QSpinBox()\r\n                spin_box.setMinimum(-1000)\r\n                spin_box.setFixedSize(60, 24)\r\n                spin_aux.append(spin_box)\r\n\r\n                container = QtWidgets.QWidget()\r\n                hbox = QtWidgets.QHBoxLayout()\r\n\r\n                hbox.addWidget(spin_box)\r\n                hbox.addWidget(label)\r\n                container.setLayout(hbox)\r\n\r\n                layout.addWidget(container, row, col * 2)\r\n\r\n            equals_label = QtWidgets.QLabel(\"=\")\r\n            equals_label.setStyleSheet(\"font-size: 15px; font-weight: bold\")\r\n            extra_spin_box = QtWidgets.QSpinBox()\r\n            extra_spin_box.setFixedSize(60, 24)\r\n            spin_aux.append(extra_spin_box)\r\n            layout.addWidget(equals_label, row, num_cols * 2)\r\n            layout.addWidget(extra_spin_box, row, num_cols * 2 + 1)\r\n            self.gaussjordan.spin_matrix.append(spin_aux)\r\n\r\n        container = QWidget()\r\n        container.setObjectName('container_main')\r\n        container.setLayout(layout)\r\n        return container\r\n\r\n    def buildTableOptions(self):\r\n        layout = QtWidgets.QHBoxLayout()\r\n        layout.setContentsMargins(10, 10, 10, 10)\r\n        layout.setSpacing(10)\r\n\r\n        clean_button = QtWidgets.QPushButton(\"Clean\")\r\n        solve_button = QtWidgets.QPushButton(\"Solve\")\r\n        clean_button.pressed.connect(self.gaussjordan.cleantable)\r\n        solve_button.pressed.connect(self.gaussjordan.solve)\r\n\r\n        layout.addWidget(clean_button)\r\n        layout.addWidget(solve_button)\r\n\r\n        container = QWidget()\r\n        container.setObjectName('container_matrix_options')\r\n        container.setLayout(layout)\r\n        return container\r\n\r\n    def buildResults(self):\r\n        pass\r\n\r\n    def buildResultsOptions(self):\r\n        pass\r\n\r\n    def warning(self, message):\r\n        popup = QMessageBox()\r\n        popup.setText(message)\r\n        popup.setWindowTitle(\"Warning\")\r\n        popup.exec()\r\n\r\ndef setAppStyles():\r\n    app.setStyleSheet(\"* {\"\r\n                      \"font: 10px 'Helvetica'; } \"\r\n                      \"#title_label { font-size: 25px; font-weight: 700; }\"\r\n                      \"QPushButton { \"\r\n                      \"background-color: black; \"\r\n                      \"border-radius: 10px;\"\r\n                      \"color: white;\"\r\n                      \"font-size: 15px;\"\r\n                      \"font-weight: 700; }\"\r\n                      \"#container_top { \"\r\n                      \"background-color: #DDDDDD; }\"\r\n                      \"QPushButton:hover { background-color: #777777;}\" )\r\n\r\ndef main():\r\n    setAppStyles()\r\n    window = MainWindow()\r\n    window.show()\r\n    sys.exit(app.exec())\r\n\r\nif __name__ == '__main__':\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    main()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/View/Gauss.py b/View/Gauss.py
+--- a/View/Gauss.py	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ b/View/Gauss.py	(date 1710248320374)
+@@ -57,26 +57,25 @@
+         label_novar = QtWidgets.QLabel('Number of variables')
+         label_noeq = QtWidgets.QLabel('Number of equations')
+ 
+-        spin_novar = QtWidgets.QSpinBox()
+-        spin_novar.setRange(2, 50)
+-        spin_novar.setFixedSize(80, 32)
++        self.spin_novar = QtWidgets.QSpinBox()
++        self.spin_novar.setRange(2, 50)
++        self.spin_novar.setFixedSize(80, 32)
++        self.spin_noeq = QtWidgets.QSpinBox()
++        self.spin_noeq.setRange(2, self.spin_novar.value())
++        self.spin_noeq.setFixedSize(80, 32)
+ 
+-        spin_noeq = QtWidgets.QSpinBox()
+-        spin_noeq.setRange(2, 50)
+-        spin_noeq.setFixedSize(80, 32)
+-
+-        spin_novar.valueChanged.connect(lambda value: self.gaussjordan.updateCols(value))
+-        spin_noeq.valueChanged.connect(lambda value: self.gaussjordan.updateRows(value))
++        self.spin_novar.valueChanged.connect(lambda value: self.gaussjordan.updateCols(value))
++        self.spin_noeq.valueChanged.connect(lambda value: self.gaussjordan.updateRows(value))
+ 
+         vbox_novar = QtWidgets.QVBoxLayout()
+         vbox_novar.addWidget(label_novar)
+-        vbox_novar.addWidget(spin_novar)
++        vbox_novar.addWidget(self.spin_novar)
+         container_novar = QtWidgets.QWidget()
+         container_novar.setLayout(vbox_novar)
+ 
+         vbox_noeq = QtWidgets.QVBoxLayout()
+         vbox_noeq.addWidget(label_noeq)
+-        vbox_noeq.addWidget(spin_noeq)
++        vbox_noeq.addWidget(self.spin_noeq)
+         container_noeq = QtWidgets.QWidget()
+         container_noeq.setLayout(vbox_noeq)
+ 
+Index: Model/test.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>def gauss_jordan(A):\r\n    # Number of eq and data structure to save states\r\n    n = len(A)\r\n    state = []\r\n\r\n    # Perform elimination\r\n    for i in range(n):\r\n        #divide current row by the diagonal element to make it 1\r\n        divisor = A[i][i] # 0,0 -> 1,1 ...\r\n        for j in range(i, n + 1):\r\n            A[i][j] /= divisor\r\n        state.append([row[:] for row in A])\r\n        # Make all other elements in the current colun zero, n cuz its te amount of eq\r\n        for k in range(n):\r\n            if k != i: # To avoid making the current eq and var zero\r\n                multiplier = A[k][i]\r\n                for j in range(i, n + 1): # goes through the eq\r\n                    A[k][j] -= multiplier * A[i][j]\r\n        # Save the state after this iteration\r\n        state.append([row[:] for row in A])\r\n    # extratc solution vector\r\n    x = [row[n] for row in A]\r\n\r\n    return x, state\r\n\r\n\r\n#A = [[2, 1, 5], [4, 4, 6]]\r\n#A = [[1, 1, 2], [3, -5, -2]]\r\n#solution, state = gauss_jordan(A) #tuple\r\n#print(\"Solution:\", solution)\r\n#print(\"State after each iteration:\")\r\n#for i, matrix in enumerate(state):\r\n#    print(f\"Iteration {i+1}:\")\r\n#    for row in matrix:\r\n#        print(row)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/test.py b/Model/test.py
+--- a/Model/test.py	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ b/Model/test.py	(date 1710248547887)
+@@ -20,11 +20,12 @@
+         state.append([row[:] for row in A])
+     # extratc solution vector
+     x = [row[n] for row in A]
+-
+     return x, state
+ 
+ 
++
+ #A = [[2, 1, 5], [4, 4, 6]]
++
+ #A = [[1, 1, 2], [3, -5, -2]]
+ #solution, state = gauss_jordan(A) #tuple
+ #print("Solution:", solution)
+Index: Controller/GaussJordan_Controller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from Model.test import gauss_jordan\r\nclass GaussJordanController:\r\n    def __init__(self, view):\r\n        self.view = view\r\n        self.rows = 2\r\n        self.cols = 2\r\n        self.spin_matrix = []\r\n\r\n    def updateCols(self, cols):\r\n        if self.cols != cols and cols > 2 and cols < 100:\r\n            self.cols = int(cols)\r\n            self.rebuild()\r\n\r\n    def updateRows(self, rows):\r\n        if self.rows != rows and rows > 2 and rows < 100:\r\n            self.rows = int(rows)\r\n            self.rebuild()\r\n\r\n    def rebuild(self):\r\n        self.spin_matrix = []\r\n        while self.view.tableLayout.count() > 0:\r\n            self.view.tableLayout.takeAt(0).widget().deleteLater()\r\n\r\n        self.view.tableLayout.addWidget(self.view.buildMain(self.rows, self.cols))\r\n\r\n    def cleantable(self):\r\n        for i in self.spin_matrix:\r\n            for j in i:\r\n                j.setValue(0)\r\n\r\n    def solve(self):\r\n        self.matrix = []\r\n        for i in self.spin_matrix:\r\n            aux = []\r\n            for j in i:\r\n                aux.append(int(j.value()))\r\n            if(not self.check_row(aux)): return\r\n            self.matrix.append(aux)\r\n\r\n        for i in self.matrix:\r\n            print(i)\r\n\r\n        solution, state = gauss_jordan(self.matrix)\r\n        print(\"Solution:\", solution)\r\n        print(\"State after each iteration:\")\r\n        for i, matrix in enumerate(state):\r\n           print(f\"Iteration {i+1}:\")\r\n           for row in matrix:\r\n               print(row)\r\n\r\n    def check_row(self, row):\r\n        for i in row:\r\n            if i != 0: return True\r\n        self.view.warning(\"Please enter at least one value diff from zero in each equation.\\n\"\r\n                          \"The table will be restored\")\r\n        self.rebuild()\r\n        return False\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Controller/GaussJordan_Controller.py b/Controller/GaussJordan_Controller.py
+--- a/Controller/GaussJordan_Controller.py	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ b/Controller/GaussJordan_Controller.py	(date 1710249324977)
+@@ -1,3 +1,10 @@
++"""
++to do:
++resize window when less eq
++format solution when a list is returned
++"""
++from PySide6.QtGui import QCursor
++
+ from Model.test import gauss_jordan
+ class GaussJordanController:
+     def __init__(self, view):
+@@ -7,12 +14,13 @@
+         self.spin_matrix = []
+ 
+     def updateCols(self, cols):
+-        if self.cols != cols and cols > 2 and cols < 100:
++        if self.cols != cols and cols >= 2 and cols < 100:
+             self.cols = int(cols)
++            self.view.spin_noeq.setRange(2, cols)
+             self.rebuild()
+ 
+     def updateRows(self, rows):
+-        if self.rows != rows and rows > 2 and rows < 100:
++        if self.rows != rows and rows >= 2 and rows < 100:
+             self.rows = int(rows)
+             self.rebuild()
+ 
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30__Changes_.xml	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]" date="1709955055765" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 08/03/2024 21:30 [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56__Changes_.xml	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]" date="1709956591167" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 08/03/2024 21:56 [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]/shelved.patch	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,103 +0,0 @@
+-Index: .idea/NumMet.iml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/NumMet.iml b/.idea/NumMet.iml
+---- a/.idea/NumMet.iml	(revision 73fcdf82163815af9f23a72683ca4a86249d0232)
+-+++ b/.idea/NumMet.iml	(date 1709833050283)
+-@@ -4,7 +4,7 @@
+-     <content url="file://$MODULE_DIR$">
+-       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+-     </content>
+--    <orderEntry type="inheritedJdk" />
+-+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
+-     <orderEntry type="sourceFolder" forTests="false" />
+-   </component>
+- </module>
+-\ No newline at end of file
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision 73fcdf82163815af9f23a72683ca4a86249d0232)
+-+++ b/.idea/workspace.xml	(date 1709832962110)
+-@@ -4,10 +4,7 @@
+-     <option name="autoReloadType" value="SELECTIVE" />
+-   </component>
+-   <component name="ChangeListManager">
+--    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+--      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--    </list>
+-+    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="" />
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+-@@ -34,20 +31,21 @@
+-     <option name="hideEmptyMiddlePackages" value="true" />
+-     <option name="showLibraryContents" value="true" />
+-   </component>
+--  <component name="PropertiesComponent">{
+--  &quot;keyToString&quot;: {
+--    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+--    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+--    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+--    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+--    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+--    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+--    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+--    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+--    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+--    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+-+  <component name="PropertiesComponent"><![CDATA[{
+-+  "keyToString": {
+-+    "ASKED_ADD_EXTERNAL_FILES": "true",
+-+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-+    "RunOnceActivity.ShowReadmeOnStart": "true",
+-+    "git-widget-placeholder": "master",
+-+    "node.js.detected.package.eslint": "true",
+-+    "node.js.detected.package.tslint": "true",
+-+    "node.js.selected.package.eslint": "(autodetect)",
+-+    "node.js.selected.package.tslint": "(autodetect)",
+-+    "nodejs_package_manager_path": "npm",
+-+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+-+    "vue.rearranger.settings.migration": "true"
+-   }
+--}</component>
+-+}]]></component>
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+-@@ -65,6 +63,7 @@
+-       <updated>1709816224229</updated>
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+-+      <workItem from="1709832897749" duration="65000" />
+-     </task>
+-     <servers />
+-   </component>
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	(revision 73fcdf82163815af9f23a72683ca4a86249d0232)
+-+++ b/.idea/misc.xml	(date 1709833050299)
+-@@ -3,5 +3,5 @@
+-   <component name="Black">
+-     <option name="sdkName" value="Python 3.11 (NumMet)" />
+-   </component>
+--  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
+-+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11" project-jdk-type="Python SDK" />
+- </project>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,130 +0,0 @@
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	
+-+++ b/.idea/workspace.xml	
+-@@ -5,8 +5,7 @@
+-   </component>
+-   <component name="ChangeListManager">
+-     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+--      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Modules/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Modules/main.py" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-@@ -34,24 +33,27 @@
+-     <option name="hideEmptyMiddlePackages" value="true" />
+-     <option name="showLibraryContents" value="true" />
+-   </component>
+--  <component name="PropertiesComponent">{
+--  &quot;keyToString&quot;: {
+--    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+--    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+--    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+--    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+--    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+--    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+--    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+--    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+--    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+--    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+-+  <component name="PropertiesComponent"><![CDATA[{
+-+  "keyToString": {
+-+    "ASKED_ADD_EXTERNAL_FILES": "true",
+-+    "Python.main.executor": "Run",
+-+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-+    "RunOnceActivity.ShowReadmeOnStart": "true",
+-+    "git-widget-placeholder": "master",
+-+    "ignore.virus.scanning.warn.message": "true",
+-+    "node.js.detected.package.eslint": "true",
+-+    "node.js.detected.package.tslint": "true",
+-+    "node.js.selected.package.eslint": "(autodetect)",
+-+    "node.js.selected.package.tslint": "(autodetect)",
+-+    "nodejs_package_manager_path": "npm",
+-+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+-+    "vue.rearranger.settings.migration": "true"
+-   }
+--}</component>
+-+}]]></component>
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+--        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+-+        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+-       </set>
+-     </attachedChunks>
+-   </component>
+-@@ -65,13 +67,28 @@
+-       <updated>1709816224229</updated>
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+-+      <workItem from="1709832217780" duration="931000" />
+-     </task>
+-     <servers />
+-   </component>
+-   <component name="TypeScriptGeneratedFilesManager">
+-     <option name="version" value="3" />
+-+  </component>
+-+  <component name="Vcs.Log.Tabs.Properties">
+-+    <option name="TAB_STATES">
+-+      <map>
+-+        <entry key="MAIN">
+-+          <value>
+-+            <State />
+-+          </value>
+-+        </entry>
+-+      </map>
+-+    </option>
+-   </component>
+-   <component name="VcsManagerConfiguration">
+-     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+-   </component>
+-+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-+    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832575126" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-+  </component>
+- </project>
+-\ No newline at end of file
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	
+-+++ b/.idea/misc.xml	
+-@@ -3,5 +3,5 @@
+-   <component name="Black">
+-     <option name="sdkName" value="Python 3.11 (NumMet)" />
+-   </component>
+--  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
+-+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (NumMet)" project-jdk-type="Python SDK" />
+- </project>
+-\ No newline at end of file
+-Index: .idea/NumMet.iml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/NumMet.iml b/.idea/NumMet.iml
+---- a/.idea/NumMet.iml	
+-+++ b/.idea/NumMet.iml	
+-@@ -4,7 +4,7 @@
+-     <content url="file://$MODULE_DIR$">
+-       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+-     </content>
+--    <orderEntry type="inheritedJdk" />
+-+    <orderEntry type="jdk" jdkName="Python 3.12 (NumMet)" jdkType="Python SDK" />
+-     <orderEntry type="sourceFolder" forTests="false" />
+-   </component>
+- </module>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a__m___Changes_1.xml	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1" date="1709833361058" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_40_a_ m__[Changes]1/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 07/03/2024 11:40 a. m. [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_56_[Changes]/shelved.patch	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,170 +0,0 @@
+-Index: Model/Equation_Solver.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>import numpy as np\r\nimport scipy as sp\r\nimport sympy\r\nfrom sympy import log\r\nimport sympy as sym\r\n\r\nclass Function:\r\n    def __init__(self, name, expression):#Defines the function\r\n        self.name = name\r\n        self.expression = sym.parse_expr(expression)\r\n        #self.error = error # %\r\n\r\n    def evaluate(self, x):\r\n        #sympy.plot(self.expression) #Function grapher\r\n        return self.expression.subs(sym.Symbol('x'), x)\r\n\r\nclass Application_Test:\r\n    def __init__(self):\r\n        self.function = None\r\n        self.value_x = None\r\n\r\n    def init(self):\r\n        #Enter the function and the initial value\r\n        name_function = input(\"Introduzca el nombre de la función: \")\r\n        expression_function = input(\"Introduzca la expresión de la función: \")\r\n        self.function = Function(name_function, expression_function)#Stores object class Function\r\n        self.value_x = float(input(\"Introduzca el valor de x: \"))\r\n\r\n    def show_result(self):\r\n        result = self.function.evaluate(self.value_x)\r\n        # Simplifica la expresión\r\n        result = sympy.simplify(result)\r\n        # Si la simplificación no elimina el logaritmo, convierte a número decimal\r\n        if isinstance(result, sympy.Expr):\r\n            result = sympy.N(result, 7)#Returns 6 decimal places after point\r\n        print(f\"El resultado de f({self.value_x}) es {result}\")\r\n\r\napp = Application_Test()\r\napp.init()\r\napp.show_result()\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/Equation_Solver.py b/Model/Equation_Solver.py
+---- a/Model/Equation_Solver.py	(revision 8c7ccd2aebed656301d6495ff26844f308778042)
+-+++ b/Model/Equation_Solver.py	(date 1709955999675)
+-@@ -38,3 +38,4 @@
+- app = Application_Test()
+- app.init()
+- app.show_result()
+-+
+-Index: Model/MainModel.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/MainModel.py b/Model/MainModel.py
+---- a/Model/MainModel.py	(revision 8c7ccd2aebed656301d6495ff26844f308778042)
+-+++ b/Model/MainModel.py	(date 1709955055533)
+-@@ -1,0 +1,14 @@
+-+from sympy import symbols, sympify
+-+
+-+class MainModel:
+-+    def __init__(self, a, b, ep):
+-+        self.a = a
+-+        self.b = b
+-+        self.ep = ep
+-+
+-+    def eval(self, x, eq):
+-+        pass
+-+
+-+    def getXr(self):
+-+        self.xr = (self.a + self.b) / 2
+-+
+-Index: .idea/NumMet.iml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/NumMet.iml b/.idea/NumMet.iml
+---- a/.idea/NumMet.iml	(revision 8c7ccd2aebed656301d6495ff26844f308778042)
+-+++ b/.idea/NumMet.iml	(date 1709955055547)
+-@@ -4,7 +4,7 @@
+-     <content url="file://$MODULE_DIR$">
+-       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+-     </content>
+--    <orderEntry type="inheritedJdk" />
+-+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
+-     <orderEntry type="sourceFolder" forTests="false" />
+-   </component>
+- </module>
+-\ No newline at end of file
+-Index: Model/test.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/test.py b/Model/test.py
+-new file mode 100644
+---- /dev/null	(date 1709955055564)
+-+++ b/Model/test.py	(date 1709955055564)
+-@@ -0,0 +1,19 @@
+-+import math
+-+
+-+# Function to evaluate user input
+-+def evaluate_function():
+-+    # Get user input for the function
+-+    user_function = input("Enter a mathematical function (e.g., sin(x), cos(x)): ")
+-+
+-+    # Get user input for the value at which to evaluate the function
+-+    value = float(input("Enter the value at which you want to evaluate the function: "))
+-+
+-+    try:
+-+        # Evaluate the function at the given value
+-+        result = eval(user_function.replace("x", str(value)))
+-+        print(f"The result of {user_function} at {value} is: {result}")
+-+    except Exception as e:
+-+        print("Error:", e)
+-+
+-+# Call the function
+-+evaluate_function()
+-\ No newline at end of file
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Modules/main.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/main.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision 8c7ccd2aebed656301d6495ff26844f308778042)
+-+++ b/.idea/workspace.xml	(date 1709956069558)
+-@@ -5,8 +5,12 @@
+-   </component>
+-   <component name="ChangeListManager">
+-     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+-+      <change afterPath="$PROJECT_DIR$/Model/test.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/NumMet.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/NumMet.iml" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/Modules/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/main.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Model/Equation_Solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Equation_Solver.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Model/MainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/MainModel.py" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-@@ -37,7 +41,10 @@
+-   <component name="PropertiesComponent"><![CDATA[{
+-   "keyToString": {
+-     "ASKED_ADD_EXTERNAL_FILES": "true",
+-+    "Python.Equation_Solver.executor": "Run",
+-+    "Python.MainModel.executor": "Run",
+-     "Python.main.executor": "Run",
+-+    "Python.test.executor": "Run",
+-     "RunOnceActivity.OpenProjectViewOnStart": "true",
+-     "RunOnceActivity.ShowReadmeOnStart": "true",
+-     "git-widget-placeholder": "master",
+-@@ -53,7 +60,7 @@
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+--        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+-+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+-       </set>
+-     </attachedChunks>
+-   </component>
+-@@ -68,6 +75,8 @@
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+-       <workItem from="1709832173995" duration="846000" />
+-+      <workItem from="1709950957972" duration="771000" />
+-+      <workItem from="1709955108830" duration="744000" />
+-     </task>
+-     <servers />
+-   </component>
+-@@ -89,6 +98,9 @@
+-     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+-   </component>
+-   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-+    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1709837124967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1709956041429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-     <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-   </component>
+- </project>
+-\ No newline at end of file
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	(revision 8c7ccd2aebed656301d6495ff26844f308778042)
+-+++ b/.idea/misc.xml	(date 1709955055587)
+-@@ -3,5 +3,5 @@
+-   <component name="Black">
+-     <option name="sdkName" value="Python 3.11 (NumMet)" />
+-   </component>
+--  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
+-+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11" project-jdk-type="Python SDK" />
+- </project>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_08_03_2024_21_30_[Changes]/shelved.patch	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,177 +0,0 @@
+-Index: Model/MainModel.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/MainModel.py b/Model/MainModel.py
+---- a/Model/MainModel.py	(revision a1c7bc6487a478f48a197c700471683f9eb4facd)
+-+++ b/Model/MainModel.py	(date 1709836797302)
+-@@ -1,0 +1,14 @@
+-+from sympy import symbols, sympify
+-+
+-+class MainModel:
+-+    def __init__(self, a, b, ep):
+-+        self.a = a
+-+        self.b = b
+-+        self.ep = ep
+-+
+-+    def eval(self, x, eq):
+-+        pass
+-+
+-+    def getXr(self):
+-+        self.xr = (self.a + self.b) / 2
+-+
+-Index: .idea/NumMet.iml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/NumMet.iml b/.idea/NumMet.iml
+---- a/.idea/NumMet.iml	(revision a1c7bc6487a478f48a197c700471683f9eb4facd)
+-+++ b/.idea/NumMet.iml	(date 1709833152110)
+-@@ -4,7 +4,7 @@
+-     <content url="file://$MODULE_DIR$">
+-       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+-     </content>
+--    <orderEntry type="inheritedJdk" />
+-+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
+-     <orderEntry type="sourceFolder" forTests="false" />
+-   </component>
+- </module>
+-\ No newline at end of file
+-Index: Model/test.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/test.py b/Model/test.py
+-new file mode 100644
+---- /dev/null	(date 1709837098197)
+-+++ b/Model/test.py	(date 1709837098197)
+-@@ -0,0 +1,19 @@
+-+import math
+-+
+-+# Function to evaluate user input
+-+def evaluate_function():
+-+    # Get user input for the function
+-+    user_function = input("Enter a mathematical function (e.g., sin(x), cos(x)): ")
+-+
+-+    # Get user input for the value at which to evaluate the function
+-+    value = float(input("Enter the value at which you want to evaluate the function: "))
+-+
+-+    try:
+-+        # Evaluate the function at the given value
+-+        result = eval(user_function.replace("x", str(value)))
+-+        print(f"The result of {user_function} at {value} is: {result}")
+-+    except Exception as e:
+-+        print("Error:", e)
+-+
+-+# Call the function
+-+evaluate_function()
+-\ No newline at end of file
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Modules/main.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/main.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision a1c7bc6487a478f48a197c700471683f9eb4facd)
+-+++ b/.idea/workspace.xml	(date 1709951741896)
+-@@ -5,8 +5,11 @@
+-   </component>
+-   <component name="ChangeListManager">
+-     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+-+      <change afterPath="$PROJECT_DIR$/Model/test.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/NumMet.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/NumMet.iml" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/Modules/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/main.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Model/MainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/MainModel.py" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-@@ -34,26 +37,28 @@
+-     <option name="hideEmptyMiddlePackages" value="true" />
+-     <option name="showLibraryContents" value="true" />
+-   </component>
+--  <component name="PropertiesComponent"><![CDATA[{
+--  "keyToString": {
+--    "ASKED_ADD_EXTERNAL_FILES": "true",
+--    "Python.main.executor": "Run",
+--    "RunOnceActivity.OpenProjectViewOnStart": "true",
+--    "RunOnceActivity.ShowReadmeOnStart": "true",
+--    "git-widget-placeholder": "master",
+--    "node.js.detected.package.eslint": "true",
+--    "node.js.detected.package.tslint": "true",
+--    "node.js.selected.package.eslint": "(autodetect)",
+--    "node.js.selected.package.tslint": "(autodetect)",
+--    "nodejs_package_manager_path": "npm",
+--    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+--    "vue.rearranger.settings.migration": "true"
+-+  <component name="PropertiesComponent">{
+-+  &quot;keyToString&quot;: {
+-+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+-+    &quot;Python.MainModel.executor&quot;: &quot;Run&quot;,
+-+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+-+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+-+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+-+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+-+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+-   }
+--}]]></component>
+-+}</component>
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+--        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+-+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+-       </set>
+-     </attachedChunks>
+-   </component>
+-@@ -68,6 +73,7 @@
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+-       <workItem from="1709832173995" duration="846000" />
+-+      <workItem from="1709950957972" duration="771000" />
+-     </task>
+-     <servers />
+-   </component>
+-@@ -89,6 +95,8 @@
+-     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+-   </component>
+-   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-+    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1709837124967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-     <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-   </component>
+- </project>
+-\ No newline at end of file
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	(revision a1c7bc6487a478f48a197c700471683f9eb4facd)
+-+++ b/.idea/misc.xml	(date 1709833183582)
+-@@ -3,5 +3,5 @@
+-   <component name="Black">
+-     <option name="sdkName" value="Python 3.11 (NumMet)" />
+-   </component>
+--  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
+-+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11" project-jdk-type="Python SDK" />
+- </project>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39__Changes_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39__Changes_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39__Changes_.xml	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ /dev/null	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]" date="1709833183608" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_07_03_2024_11_39_[Changes]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 07/03/2024 11:39 [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/Controller/GaussJordan_Controller.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Model/test.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Model/test.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/View/Gauss.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/Gauss.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.BiseccionView.executor\": \"Run\",\r\n    \"Python.Gauss.executor\": \"Run\",\r\n    \"Python.GaussJordan_Controller.executor\": \"Run\",\r\n    \"Python.SecantView.executor\": \"Run\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"Python.test.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n      <workItem from=\"1710209591103\" duration=\"993000\" />\r\n      <workItem from=\"1710233790481\" duration=\"6344000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$BiseccionView.coverage\" NAME=\"BiseccionView Coverage Results\" MODIFIED=\"1710207306198\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$test.coverage\" NAME=\"test Coverage Results\" MODIFIED=\"1710239585671\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$SecantView.coverage\" NAME=\"SecantView Coverage Results\" MODIFIED=\"1710207344371\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Equation_Solver.coverage\" NAME=\"Equation_Solver Coverage Results\" MODIFIED=\"1709956811744\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$MainModel.coverage\" NAME=\"MainModel Coverage Results\" MODIFIED=\"1709835017577\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Gauss.coverage\" NAME=\"Gauss Coverage Results\" MODIFIED=\"1710240161091\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$GaussJordan_Controller.coverage\" NAME=\"GaussJordan_Controller Coverage Results\" MODIFIED=\"1710239475903\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Controller\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 1ec04c0c5594e0034ec2fed20dfe83226454a74f)
++++ b/.idea/workspace.xml	(date 1710384257990)
+@@ -5,8 +5,8 @@
+   </component>
+   <component name="ChangeListManager">
+     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+-      <change afterPath="$PROJECT_DIR$/Controller/GaussJordan_Controller.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Controller/GaussJordan_Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/GaussJordan_Controller.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Model/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/test.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/View/Gauss.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/Gauss.py" afterDir="false" />
+     </list>
+@@ -36,27 +36,27 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ASKED_ADD_EXTERNAL_FILES": "true",
+-    "Python.BiseccionView.executor": "Run",
+-    "Python.Gauss.executor": "Run",
+-    "Python.GaussJordan_Controller.executor": "Run",
+-    "Python.SecantView.executor": "Run",
+-    "Python.main.executor": "Run",
+-    "Python.test.executor": "Run",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "git-widget-placeholder": "master",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
++    &quot;Python.BiseccionView.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Gauss.executor&quot;: &quot;Run&quot;,
++    &quot;Python.GaussJordan_Controller.executor&quot;: &quot;Run&quot;,
++    &quot;Python.SecantView.executor&quot;: &quot;Run&quot;,
++    &quot;Python.main.executor&quot;: &quot;Run&quot;,
++    &quot;Python.test.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+@@ -76,7 +76,12 @@
+       <workItem from="1709831463985" duration="23000" />
+       <workItem from="1709832173995" duration="846000" />
+       <workItem from="1710209591103" duration="993000" />
+-      <workItem from="1710233790481" duration="6344000" />
++      <workItem from="1710233790481" duration="6567000" />
++      <workItem from="1710244629479" duration="485000" />
++      <workItem from="1710247861129" duration="1688000" />
++      <workItem from="1710263419363" duration="145000" />
++      <workItem from="1710306114292" duration="10000" />
++      <workItem from="1710381343308" duration="212000" />
+     </task>
+     <servers />
+   </component>
+@@ -99,12 +104,12 @@
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+     <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710207306198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1710239585671" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
++    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1710248547981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710207344371" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+     <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1709956811744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-    <SUITE FILE_PATH="coverage/NumMet$Gauss.coverage" NAME="Gauss Coverage Results" MODIFIED="1710240161091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
++    <SUITE FILE_PATH="coverage/NumMet$Gauss.coverage" NAME="Gauss Coverage Results" MODIFIED="1710263446901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+     <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-    <SUITE FILE_PATH="coverage/NumMet$GaussJordan_Controller.coverage" NAME="GaussJordan_Controller Coverage Results" MODIFIED="1710239475903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
++    <SUITE FILE_PATH="coverage/NumMet$GaussJordan_Controller.coverage" NAME="GaussJordan_Controller Coverage Results" MODIFIED="1710249325068" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
+   </component>
+ </project>
+\ No newline at end of file

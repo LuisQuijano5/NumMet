@@ -3,12 +3,12 @@ from PySide6.QtCore import Qt
 import sys
 
 from PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton, QSpinBox, QMessageBox
-import Controller.GaussJordan_Controller as controller
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, title, controller):
         super().__init__()
-        self.gaussjordan = controller.GaussJordanController(self)
+        self.title = title
+        self.controller = controller
         self.setupUi()
 
         central_widget = QWidget()
@@ -16,9 +16,11 @@ class MainWindow(QtWidgets.QMainWindow):
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
 
+
     def setupUi(self):
+        #self.setAppStyles()
         self.stacked_layout = QStackedLayout()
-        view = QWidget()
+        self.bodyView = QWidget()
         body = QtWidgets.QVBoxLayout()
 
         body.addWidget(self.buildTop())
@@ -32,12 +34,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         body.addWidget(self.buildTableOptions())
 
-        view.setLayout(body)
-        self.stacked_layout.addWidget(view)
+        self.bodyView.setLayout(body)
+        self.stacked_layout.addWidget(self.bodyView)
 
     def buildTop(self):
         title_label = QtWidgets.QLabel()
-        title_label.setText('Gauss-Jordan')
+        title_label.setText(self.title)
         title_label.setObjectName('title_label')
 
         help_button = QtWidgets.QPushButton(' ? ')
@@ -55,34 +57,33 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def buildNo(self):
         label_novar = QtWidgets.QLabel('Number of variables')
-        label_noeq = QtWidgets.QLabel('Number of equations')
+        #label_noeq = QtWidgets.QLabel('Number of equations')
 
-        spin_novar = QtWidgets.QSpinBox()
-        spin_novar.setRange(2, 50)
-        spin_novar.setFixedSize(80, 32)
+        self.spin_novar = QtWidgets.QSpinBox()
+        self.spin_novar.setRange(2, 50)
+        self.spin_novar.setFixedSize(80, 32)
+        #self.spin_noeq = QtWidgets.QSpinBox()
+        #self.spin_noeq.setRange(2, self.spin_novar.value())
+        #self.spin_noeq.setFixedSize(80, 32)
 
-        spin_noeq = QtWidgets.QSpinBox()
-        spin_noeq.setRange(2, 50)
-        spin_noeq.setFixedSize(80, 32)
-
-        spin_novar.valueChanged.connect(lambda value: self.gaussjordan.updateCols(value))
-        spin_noeq.valueChanged.connect(lambda value: self.gaussjordan.updateRows(value))
+        self.spin_novar.valueChanged.connect(lambda value: self.controller.updateCols(value))
+        #self.spin_noeq.valueChanged.connect(lambda value: self.controller.updateRows(value))
 
         vbox_novar = QtWidgets.QVBoxLayout()
         vbox_novar.addWidget(label_novar)
-        vbox_novar.addWidget(spin_novar)
+        vbox_novar.addWidget(self.spin_novar)
         container_novar = QtWidgets.QWidget()
         container_novar.setLayout(vbox_novar)
 
-        vbox_noeq = QtWidgets.QVBoxLayout()
-        vbox_noeq.addWidget(label_noeq)
-        vbox_noeq.addWidget(spin_noeq)
-        container_noeq = QtWidgets.QWidget()
-        container_noeq.setLayout(vbox_noeq)
+        #vbox_noeq = QtWidgets.QVBoxLayout()
+        #vbox_noeq.addWidget(label_noeq)
+        #vbox_noeq.addWidget(self.spin_noeq)
+        #container_noeq = QtWidgets.QWidget()
+        #container_noeq.setLayout(vbox_noeq)
 
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(container_novar)
-        layout.addWidget(container_noeq)
+        #layout.addWidget(container_noeq)
 
         container = QWidget()
         container.setObjectName('container_center')
@@ -97,7 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for row in range(num_rows):
             spin_aux = []
             for col in range(num_cols):
-                label = QtWidgets.QLabel(f"x {col + 1}")
+                label = QtWidgets.QLabel(f"x{col + 1}")
                 label.setStyleSheet("font-size: 15px; font-weight: bold")
                 spin_box = QtWidgets.QSpinBox()
                 spin_box.setMinimum(-1000)
@@ -120,7 +121,7 @@ class MainWindow(QtWidgets.QMainWindow):
             spin_aux.append(extra_spin_box)
             layout.addWidget(equals_label, row, num_cols * 2)
             layout.addWidget(extra_spin_box, row, num_cols * 2 + 1)
-            self.gaussjordan.spin_matrix.append(spin_aux)
+            self.controller.spin_matrix.append(spin_aux)
 
         container = QWidget()
         container.setObjectName('container_main')
@@ -134,8 +135,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         clean_button = QtWidgets.QPushButton("Clean")
         solve_button = QtWidgets.QPushButton("Solve")
-        clean_button.pressed.connect(self.gaussjordan.cleantable)
-        solve_button.pressed.connect(self.gaussjordan.solve)
+        clean_button.pressed.connect(self.controller.cleantable)
+        solve_button.pressed.connect(self.controller.solve)
 
         layout.addWidget(clean_button)
         layout.addWidget(solve_button)
@@ -145,38 +146,24 @@ class MainWindow(QtWidgets.QMainWindow):
         container.setLayout(layout)
         return container
 
-    def buildResults(self):
-        pass
-
-    def buildResultsOptions(self):
-        pass
-
     def warning(self, message):
         popup = QMessageBox()
         popup.setText(message)
         popup.setWindowTitle("Warning")
         popup.exec()
 
-def setAppStyles():
-    app.setStyleSheet("* {"
-                      "font: 10px 'Helvetica'; } "
-                      "#title_label { font-size: 25px; font-weight: 700; }"
-                      "QPushButton { "
-                      "background-color: black; "
-                      "border-radius: 10px;"
-                      "color: white;"
-                      "font-size: 15px;"
-                      "font-weight: 700; }"
-                      "#container_top { "
-                      "background-color: #DDDDDD; }"
-                      "QPushButton:hover { background-color: #777777;}" )
+    def setAppStyles(self):
+        self.app.setStyleSheet("* {"
+                          "font: 10px 'Helvetica'; } "
+                          "#title_label { font-size: 25px; font-weight: 700; }"
+                          "QPushButton { "
+                          "background-color: black; "
+                          "border-radius: 10px;"
+                          "color: white;"
+                          "font-size: 15px;"
+                          "font-weight: 700; }"
+                          "#container_top { "
+                          "background-color: #DDDDDD; }"
+                          "QPushButton:hover { background-color: #777777;}")
 
-def main():
-    setAppStyles()
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
 
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    main()
