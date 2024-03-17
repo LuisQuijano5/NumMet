@@ -1,6 +1,7 @@
 import sympy
 from sympy import Symbol
 import sympy as sym
+import os
 
 class Function:
     def __init__(self, expression):#Defines the function
@@ -13,7 +14,9 @@ class Function:
         return self.expression.subs(sym.Symbol('x'), x)
 
     def plot(self):# Graph the Function
-        sympy.plot(self.expression, title=f"Gráfica de {self.name}")
+        plot_file = "grafica.png"
+        sympy.plot(self.expression, title=f"Gráfica de {self.name}", show=False).save(plot_file)
+        return os.path.abspath(plot_file)
 
 class Application_Test:
     def __init__(self):

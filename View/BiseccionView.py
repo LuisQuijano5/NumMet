@@ -7,9 +7,10 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__))
 stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
 
-with open('styleSheet.css', 'r') as f:
+#with open('styleSheet.css', 'r') as f:
+   # stylesheet = f.read()
+with open(stylesheet_path, 'r') as f:
     stylesheet = f.read()
-
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -114,7 +115,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(stylesheet)
+    #app.setStyleSheet(stylesheet)
     ventana = MainWindow()
     ventana.show()
     sys.exit(app.exec())

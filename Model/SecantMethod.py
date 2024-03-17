@@ -36,6 +36,7 @@ class SecantSolver:
         return xi_plus_1, approximate_error
 
     def solve(self):
+        results = []
         try:
             while True:
                 xi_plus_1, approximate_error = self.calculate_next_approximation()
@@ -43,6 +44,9 @@ class SecantSolver:
                 # Redondear los valores a 6 decimales
                 xi_plus_1 = round(xi_plus_1, 6)
                 approximate_error = round(approximate_error, 6)
+
+                results.append((self.xi_minus_1, self.xi, self.function.evaluate(self.xi_minus_1),
+                                self.function.evaluate(self.xi), xi_plus_1, approximate_error))
 
                 print(f"xi_minus_1: {self.xi_minus_1}, xi: {self.xi}")
                 print(f"Siguiente aproximación (x): {xi_plus_1}")
@@ -60,3 +64,5 @@ class SecantSolver:
         except ValueError as e:
             print("Error:", e)
             print("No es posible resolver la ecuación debido a un problema identificado.")
+
+        return results
