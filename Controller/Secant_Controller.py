@@ -64,13 +64,16 @@ class SecantController:
                 self.ventana.edit_resultado.setStyleSheet("color: red;")  # Color rojo
                 self.ventana.edit_resultado.setText("No se pudo calcular debido a una entrada inválida.")
 
-            if error_message.startswith("Posible divergencia") or error_message.startswith("La función es casi constante" or error_message.startswith("El cálculo de la siguiente")):
-                # Manejo específico para la excepción de posible divergencia
-                self.ventana.show_error_message(error_message + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
-            else:
-                # Otros errores
-                self.ventana.show_error_message(
-                    "Error: No es posible resolver la ecuación debido a un problema identificado."+ "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
+            if(error_message != None):
+               if error_message.startswith("Posible divergencia") or error_message.startswith(
+                       "La función es casi constante" or error_message.startswith("El cálculo de la siguiente")):
+                   # Manejo específico para la excepción de posible divergencia
+                   self.ventana.show_error_message(
+                       error_message + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
+               else:
+                   # Otros errores
+                   self.ventana.show_error_message(
+                       "Error: No es posible resolver la ecuación debido a un problema identificado." + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
         except ValueError as e:
             # Capturar la excepción de división por cero en la función y mostrar el mensaje de error
             self.ventana.show_error_message(str(e))
