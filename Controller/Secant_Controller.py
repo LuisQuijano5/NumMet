@@ -70,7 +70,7 @@ class SecantController:
             else:
                 # Otros errores
                 self.ventana.show_error_message(
-                    "Error: No es posible resolver la ecuación debido a un problema identificado.")
+                    "Error: No es posible resolver la ecuación debido a un problema identificado."+ "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
         except ValueError as e:
             # Capturar la excepción de división por cero en la función y mostrar el mensaje de error
             self.ventana.show_error_message(str(e))
@@ -123,8 +123,8 @@ class SecantController:
 
     def help(self):
         help_dialog = QDialog()
-        help_dialog.setWindowTitle("Manual de Usuario Gauss-Jordan")
-        help_dialog.setFixedSize(500, 350)
+        help_dialog.setWindowTitle("Manual de Usuario Secante")
+        help_dialog.setFixedSize(650, 400)
 
         scroll_area = QScrollArea()
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
@@ -135,29 +135,67 @@ class SecantController:
         layout = QVBoxLayout()
 
         # Título
-        title_label = QLabel("Manual de Usuario Gauss-Jordan")
+        title_label = QLabel("Manual de Usuario Secante")
         title_label.setStyleSheet("font-family: Arial, sans-serif; font-size:14pt;;")
         content_layout.addWidget(title_label)
 
         # Instrucciones
         instructions_label = QLabel(
+            "Verifica inicialmente tu función y valores iniciales (que se llegue a una raíz en el intervalo)\n"
+            "para evitar que aparezcan errores. Al final hay un ejemplo de cómo escribir una función.\n\n"
+            
+            "OPERACIONES ALGEBRAICAS\n\n"
+            
             "-Exponentes: x^2 se escibe como x**2\n"
             "-Multiplicacion: x*2\n"
             "-Division: x/2\n"
             "-Suma: x + 2\n"
-            "-Resta: x - 2"
-            "-Logaritmo: log(x,base)\n"
-            "-Seno: sin(x)\n"
-            "-Coseno: cos(x)"
-            "-Tangente: tan(x)"
+            "-Resta: x - 2\n"
+            "-Raíz Cuadrada: x**(1/2) o con sqrt(x)\n"
+            "-Raíz Cúbica: x**(1/3) o con cbrt(x)\n"
+            "-Raíz de cuanquier radical: x**(1/n)\n"
             "-Numero e: e^x -> exp(x)\n"
+            "-Valor Absoluto: Abs(x)\n"
+            "-Factorial: factorial(x)\n\n"
+            "FUNCIONES LOGARÍTMICAS\n\n"
+            "-Logaritmo: log(x,base)\n"
+            "-Logaritmo natural: log(x)\n\n"
             
-            "Nota: Se respeta la prioridad por paréntesis\n"
+            "FUNCIONES TRIGONOMÉTRICAS\n\n"
             
-            "EJEMPLO.\n"
+            "-Seno: sin(x)\n"
+            "-Coseno: cos(x)\n"
+            "-Tangente: tan(x)\n"
+            "-Arcoseno: asin(x)\n"
+            "-Arcocoseno: acos(x)\n"
+            "-Arcotangente: atan(x)\n"
+            "-Cosecante: csc(x)\n"
+            "-Secante: sec(x)\n"
+            "-Cotangente: cot(x)\n"
+            "-Arcocosecante: acsc(x)\n"
+            "-Arcosecante: asec(x)\n"
+            "-Arcocotangente: acot(x)\n\n"
+            
+            "FUNCIONES HIPERBOLÍCAS\n\n"
+            
+            "-Seno hiperbólico: sinh(x)\n"
+            "-Coseno hiperbólico: cosh(x)\n"
+            "-Tangente hiperbólica: tanh(x)\n"
+            "-Arcoseno hiperbólico: asinh(x)\n"
+            "-Arcocoseno hiperbólico: acosh(x)\n"
+            "-Arcotangente hiperbólica: atanh(x)\n\n"
+            
+            "FUNCIONES ESPECIALES\n\n"
+            
+            "-Función Gamma: gamma(x)\n"
+            "-Función Beta: beta(x,y)\n\n"
+            
+            "Nota: Se respeta la prioridad por paréntesis\n\n"
+            
+            "EJEMPLO.\n\n"
             
             "La ecuación x^4 - 2x^3 - 12x^2 + 16x - 40 se esribe como:\n"
-                    "x**4 - 2*x**3 - 12*x**2 + 16*x - 40\n"
+                    "\tx**4 - 2*x**3 - 12*x**2 + 16*x - 40\n"
         )
         instructions_label.setStyleSheet("font-family: Arial, sans-serif; font-size:11pt;")
         content_layout.addWidget(instructions_label)
