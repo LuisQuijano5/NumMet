@@ -13,17 +13,13 @@ def separar_matriz(matriz):
 #              [3, -2, 8, -1, 19],
 #              [1, 1, 1, -5, -14]]
 
-def gauss_seidel(matrizComp):
+def gauss_seidel(matrizComp, ep):
 
-    coeficientes,vectorCtes = separar_matriz(matrixComp)
-
-    #print(A)
-    #print(B)
+    coeficientes,vectorCtes = separar_matriz(matrizComp)
 
     n = len(coeficientes)
     X = [0] * n
 
-    eP=0.01
     iteramax=100
     historial = "itera | "
 
@@ -33,18 +29,18 @@ def gauss_seidel(matrizComp):
         historial=historial+"x"+str(i)+" | xn"+str(i)+" | e"+str(i)+" | "
 
     historial=historial+"\n"
-    error=eP*2
+    error=ep*2
     itera=1
 
 
-    while(error>=eP and itera<=iteramax):
+    while(error>=ep and itera<=iteramax):
         historial=historial+str(itera)+" | "
         for i in range(n):
             suma = sum(coeficientes[i][j] * X[j] for j in range(n) if j != i)
 
-            nuevo=(vectorCtes[i]-suma)/coeficientes[i][i]
+            nuevo=round((vectorCtes[i]-suma)/coeficientes[i][i],6)
 
-            errores[i]=abs(1-X[i]/nuevo)*100
+            errores[i]=round(abs(1-X[i]/nuevo)*100,6)
 
             historial=historial + str(X[i])+" | "+str(nuevo)+" | "+str(errores[i])+" | "
 

@@ -1,5 +1,3 @@
-import os
-
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 import sys
@@ -13,13 +11,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.title = title
         self.controller = controller
         self.setupUi()
-
-        # Cargar los estilos CSS
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
-        with open(stylesheet_path, 'r') as f:
-            stylesheet = f.read()
-        self.setStyleSheet(stylesheet)
 
         central_widget = QWidget()
         central_widget.setContentsMargins(0, 0, 0, 0)
@@ -54,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
         title_label.setObjectName('title_label')
 
         help_button = QtWidgets.QPushButton(' ? ')
-        return_button = QtWidgets.QPushButton(' Menu ')
+        return_button = QtWidgets.QPushButton(' Return ')
         """
         rebo adicione los metodos estos para que erick trabaje
         asegurate de ponerlo en tu controlador despues del init para
@@ -74,18 +65,21 @@ class MainWindow(QtWidgets.QMainWindow):
         return container
 
     def buildNo(self):
-        label_novar = QtWidgets.QLabel('Numero de Variables')
-        #label_noeq = QtWidgets.QLabel('Number of equations')
+        label_novar = QtWidgets.QLabel('Number of variables')
+        label_ep = QtWidgets.QLabel('Error permitido (%)')
 
         self.spin_novar = QtWidgets.QSpinBox()
         self.spin_novar.setRange(2, 26)
         self.spin_novar.setFixedSize(80, 32)
-        #self.spin_noeq = QtWidgets.QSpinBox()
-        #self.spin_noeq.setRange(2, self.spin_novar.value())
-        #self.spin_noeq.setFixedSize(80, 32)
+
+        self.spin_ep = QtWidgets.QDoubleSpinBox()
+        self.spin_ep.setMinimum(0)
+        self.spin_ep.setMaximum(100)
+        self.spin_ep.setFixedSize(80, 32)
+        self.spin_ep.setDecimals(5)
 
         self.spin_novar.valueChanged.connect(lambda value: self.controller.updateCols(value))
-        #self.spin_noeq.valueChanged.connect(lambda value: self.controller.updateRows(value))
+        self.spin_ep.valueChanged.connect(lambda value: self.controller.updateEp(value))
 
         vbox_novar = QtWidgets.QVBoxLayout()
         vbox_novar.addWidget(label_novar)
@@ -93,15 +87,15 @@ class MainWindow(QtWidgets.QMainWindow):
         container_novar = QtWidgets.QWidget()
         container_novar.setLayout(vbox_novar)
 
-        #vbox_noeq = QtWidgets.QVBoxLayout()
-        #vbox_noeq.addWidget(label_noeq)
-        #vbox_noeq.addWidget(self.spin_noeq)
-        #container_noeq = QtWidgets.QWidget()
-        #container_noeq.setLayout(vbox_noeq)
+        vbox_ep = QtWidgets.QVBoxLayout()
+        vbox_ep.addWidget(label_ep)
+        vbox_ep.addWidget(self.spin_ep)
+        container_ep = QtWidgets.QWidget()
+        container_ep.setLayout(vbox_ep)
 
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(container_novar)
-        #layout.addWidget(container_noeq)
+        layout.addWidget(container_ep)
 
         container = QWidget()
         container.setObjectName('container_center')
@@ -125,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 spin_box.setMinimum(-1000)
                 spin_box.setMaximum(1000)
                 spin_box.setFixedSize(112, 36)
-                spin_box.setDecimals(3)
+                spin_box.setDecimals(2)
                 spin_box.setStyleSheet("QDoubleSpinBox { font-size: 16px; }")
                 spin_aux.append(spin_box)
 
@@ -144,7 +138,7 @@ class MainWindow(QtWidgets.QMainWindow):
             extra_spin_box.setMinimum(-1000)
             extra_spin_box.setMaximum(1000)
             extra_spin_box.setFixedSize(112, 36)
-            extra_spin_box.setDecimals(3)
+            extra_spin_box.setDecimals(2)
             extra_spin_box.setStyleSheet("QDoubleSpinBox { font-size: 16px; }")
             spin_aux.append(extra_spin_box)
             layout.addWidget(equals_label, row, num_cols * 2)
@@ -164,8 +158,8 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
-        clean_button = QtWidgets.QPushButton("Limpiar")
-        solve_button = QtWidgets.QPushButton("Calcular")
+        clean_button = QtWidgets.QPushButton("Clean")
+        solve_button = QtWidgets.QPushButton("Solve")
         clean_button.pressed.connect(self.controller.cleantable)
         solve_button.pressed.connect(self.controller.solve)
 
@@ -182,7 +176,3 @@ class MainWindow(QtWidgets.QMainWindow):
         popup.setText(message)
         popup.setWindowTitle("Warning")
         popup.exec()
-
-
-
-
