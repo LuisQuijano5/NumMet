@@ -1,3 +1,5 @@
+import os
+
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 import sys
@@ -11,6 +13,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.title = title
         self.controller = controller
         self.setupUi()
+
+        # Cargar los estilos CSS
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+        with open(stylesheet_path, 'r') as f:
+            stylesheet = f.read()
+        self.setStyleSheet(stylesheet)
 
         central_widget = QWidget()
         central_widget.setContentsMargins(0, 0, 0, 0)
@@ -45,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         title_label.setObjectName('title_label')
 
         help_button = QtWidgets.QPushButton(' ? ')
-        return_button = QtWidgets.QPushButton(' Return ')
+        return_button = QtWidgets.QPushButton(' Menu ')
         """
         rebo adicione los metodos estos para que erick trabaje
         asegurate de ponerlo en tu controlador despues del init para
@@ -65,7 +74,7 @@ class MainWindow(QtWidgets.QMainWindow):
         return container
 
     def buildNo(self):
-        label_novar = QtWidgets.QLabel('Number of variables')
+        label_novar = QtWidgets.QLabel('Numero de Variables')
         #label_noeq = QtWidgets.QLabel('Number of equations')
 
         self.spin_novar = QtWidgets.QSpinBox()
@@ -155,8 +164,8 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
-        clean_button = QtWidgets.QPushButton("Clean")
-        solve_button = QtWidgets.QPushButton("Solve")
+        clean_button = QtWidgets.QPushButton("Limpiar")
+        solve_button = QtWidgets.QPushButton("Calcular")
         clean_button.pressed.connect(self.controller.cleantable)
         solve_button.pressed.connect(self.controller.solve)
 

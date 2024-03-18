@@ -27,12 +27,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # Layout para ecuacion y boton de Ayuda
         layout_ecuacion = QtWidgets.QHBoxLayout()
         # Textfield para ecuacion
+        label_funicon = QtWidgets.QLabel("Funcion")
+        layout_ecuacion.addWidget(label_funicon)
         self.edit_ecuacion = QtWidgets.QLineEdit()
-        self.edit_ecuacion.setPlaceholderText("Ingrese la ecuacion (e.g., x**2 - 2)")
+        self.edit_ecuacion.setPlaceholderText("De click en el boton de Ayuda (Derecha) para saber como ingresar la funcion")
         layout_ecuacion.addWidget(self.edit_ecuacion)
         # Boton Ayuda
-        button_a = QtWidgets.QPushButton("?")
-        layout_ecuacion.addWidget(button_a)
+        self.button_a = QtWidgets.QPushButton("?")
+        layout_ecuacion.addWidget(self.button_a)
 
         layout.addLayout(layout_ecuacion)
 

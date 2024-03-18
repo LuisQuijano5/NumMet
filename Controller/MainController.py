@@ -1,28 +1,67 @@
 import sys
-import os
 from PySide6 import QtWidgets
+from PySide6.QtWidgets import QApplication, QMainWindow
 
-from View import MainWindow
-from View import MenuMethodsWiindow
+from View.MainWindow import MainWindow
+from View.MenuMethodsWiindow import MainWindowMenu
+from GaussJordan_Controller import GaussJordanController
+from Secant_Controller import SecantController
 
-class MainController:
+
+class MainController(QMainWindow):
     def __init__(self):
-        self.app = QtWidgets.QApplication(sys.argv)
+        super().__init__()
 
-        # Creamos las instancias de las ventanas
         self.main_window = MainWindow()
-        self.menu_window = MenuMethodsWiindow()
-
-        # Conectamos la señal del botón de la ventana principal a la función que muestra la segunda ventana
-        self.main_window.button_siguiente.clicked.connect(self.mostrar_menu)
-
-        # Mostramos la ventana principal
         self.main_window.show()
+        self.main_window.button_siguiente.clicked.connect(self.show_menu)
 
-    def mostrar_menu(self):
-        # Mostramos la ventana del menú de métodos
-        self.menu_window.show()
+        self.menu = None
+
+    def show_menu(self):
+        # Cerrar la ventana de inicio
+        self.main_window.close()
+
+        # Mostrar el menú
+        self.menu = MainWindowMenu()
+        self.menu.show()
+        self.menu.button_siguiente.clicked.connect(self.on_continuar_click)
+
+    def on_continuar_click(self):
+        if self.menu.opcion_1.isChecked():
+            self.ejecutar_metodo("Bisección")
+        elif self.menu.opcion_2.isChecked():
+            self.ejecutar_metodo("Secante")
+        elif self.menu.opcion_3.isChecked():
+            self.ejecutar_metodo("Gauss-Jordan")
+        elif self.menu.opcion_4.isChecked():
+            self.ejecutar_metodo("Gauss-Seidel")
+
+    def ejecutar_metodo(self, metodo):
+        # Cerrar el menú principal
+        self.menu.close()
+        # Mostrar la ventana correspondiente al método seleccionado
+        if metodo == "Bisección":
+            # Lógica para la bisección
+            pass
+        elif metodo == "Secante":
+            self.secant_controller = SecantController(self)
+            self.secant_controller.ventana.show()
+            self.secant_controller.move_window_to_center()
+            pass
+        elif metodo == "Gauss-Jordan":
+            self.controller = GaussJordanController(self)
+            self.controller.view.show()
+            self.controller.move_window_to_center()
+            pass
+        elif metodo == "Gauss-Seidel":
+            # Lógica para Gauss-Jordan o Gauss-Seidel
+            pass
+
+
 
 if __name__ == "__main__":
-    controller = MainController()
-    sys.exit(controller.app.exec())
+    app = QApplication(sys.argv)
+    window = MainController()
+
+    sys.exit(app.exec())

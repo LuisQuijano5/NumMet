@@ -3,19 +3,19 @@ from PySide6 import QtWidgets
 from PySide6 import QtCore
 import os
 
-# Obtener la ruta del directorio actual del script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
-
-with open('styleSheet.css', 'r') as f:
-    stylesheet = f.read()
-
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindowMenu(QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Seleccione una opción")
         self.setGeometry(100, 100, 800, 600)
+
+        # Cargar los estilos CSS
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+        with open(stylesheet_path, 'r') as f:
+            stylesheet = f.read()
+        self.setStyleSheet(stylesheet)
 
         # Crear layout principal
         layout = QtWidgets.QVBoxLayout()
@@ -37,7 +37,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Opciones (radio buttons)
         self.opcion_1 = QtWidgets.QRadioButton("Metodo Biseccion")
         self.opcion_2 = QtWidgets.QRadioButton("Metodo Secante")
-        self.opcion_3 = QtWidgets.QRadioButton("Metodo Gauss-Jorda")
+        self.opcion_3 = QtWidgets.QRadioButton("Metodo Gauss-Jordan")
         self.opcion_4 = QtWidgets.QRadioButton("Metodo Gauss-Seidel")
 
         # Agregar opciones al grupo
@@ -61,9 +61,9 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(group_box)
 
         # Botón "Continuar"
-        button_siguiente = QtWidgets.QPushButton("Continuar")
+        self.button_siguiente = QtWidgets.QPushButton("Continuar")
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(button_siguiente)
+        button_layout.addWidget(self.button_siguiente)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(button_layout)
 
@@ -72,9 +72,16 @@ class MainWindow(QtWidgets.QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
+        self.move_window_to_center()
+
+    def move_window_to_center(self):
+        screen_geometry = QtWidgets.QApplication.primaryScreen().geometry()
+        window_geometry = self.frameGeometry()
+        window_geometry.moveCenter(screen_geometry.center())
+        self.move(window_geometry.topLeft())
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    app.setStyleSheet(stylesheet)
-    ventana = MainWindow()
+    ventana = MainWindowMenu()
     ventana.show()
     sys.exit(app.exec())

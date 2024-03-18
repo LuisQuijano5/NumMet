@@ -2,6 +2,8 @@ import sys
 from PySide6 import QtWidgets
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QLabel, QDialog, QWidget, QVBoxLayout, QPushButton, QScrollArea
+
 from View.SecantView import MainWindow
 from Model.SecantMethod import SecantSolver
 from Model.Equation_Solver import Function
@@ -9,14 +11,16 @@ import sympy as sp
 
 
 class SecantController:
-    def __init__(self):
-        self.app = QtWidgets.QApplication(sys.argv)
+    def __init__(self, app):
+        self.app = app
         self.ventana = MainWindow()
         self.ventana.show()
 
         # Conectar eventos de la interfaz gráfica a la lógica
         self.ventana.button_calcular.clicked.connect(self.calcular)
         self.ventana.button_graficar.clicked.connect(self.graficar)
+        self.ventana.button_volverMenu.clicked.connect(self.return_to_menu)
+        self.ventana.button_a.clicked.connect(self.help)
 
         # Crear una instancia del solucionador de la ecuación
         self.solver = SecantSolver()
@@ -110,6 +114,72 @@ class SecantController:
 
         # Mostrar la nueva ventana
         ventana_grafica.show()
+
+    def return_to_menu(self):
+        from MainController import MainController
+        self.main_controller = MainController()
+        self.main_controller.show_menu()
+        self.ventana.close()
+
+    def help(self):
+        help_dialog = QDialog()
+        help_dialog.setWindowTitle("Manual de Usuario Gauss-Jordan")
+        help_dialog.setFixedSize(500, 350)
+
+        scroll_area = QScrollArea()
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+
+        layout = QVBoxLayout()
+
+        # Título
+        title_label = QLabel("Manual de Usuario Gauss-Jordan")
+        title_label.setStyleSheet("font-family: Arial, sans-serif; font-size:14pt;;")
+        content_layout.addWidget(title_label)
+
+        # Instrucciones
+        instructions_label = QLabel(
+            "-Exponentes: x^2 se escibe como x**2\n"
+            "-Multiplicacion: x*2\n"
+            "-Division: x/2\n"
+            "-Suma: x + 2\n"
+            "-Resta: x - 2"
+            "-Logaritmo: log(x,base)\n"
+            "-Seno: sin(x)\n"
+            "-Coseno: cos(x)"
+            "-Tangente: tan(x)"
+            "-Numero e: e^x -> exp(x)\n"
+            
+            "Nota: Se respeta la prioridad por paréntesis\n"
+            
+            "EJEMPLO.\n"
+            
+            "La ecuación x^4 - 2x^3 - 12x^2 + 16x - 40 se esribe como:\n"
+                    "x**4 - 2*x**3 - 12*x**2 + 16*x - 40\n"
+        )
+        instructions_label.setStyleSheet("font-family: Arial, sans-serif; font-size:11pt;")
+        content_layout.addWidget(instructions_label)
+
+        # Botón de regresar
+        return_button = QPushButton("Return")
+        return_button.setStyleSheet("background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;")
+        return_button.clicked.connect(help_dialog.close)
+        content_layout.addWidget(return_button)
+        content_widget.setLayout(content_layout)
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
+
+        help_dialog.setLayout(layout)
+        help_dialog.exec()
+
+    def move_window_to_center(self):
+        # Mover la ventana al centro de la pantalla
+        screen_geometry = QtWidgets.QApplication.primaryScreen().geometry()
+        x = (screen_geometry.width() - self.ventana.width()) / 2
+        y = (screen_geometry.height() - self.ventana.height()) / 2
+        self.ventana.move(x, y)
 
     def run(self):
         sys.exit(self.app.exec_())
