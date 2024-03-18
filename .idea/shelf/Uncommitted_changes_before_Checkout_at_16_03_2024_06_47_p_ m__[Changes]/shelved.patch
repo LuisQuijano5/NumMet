@@ -1,0 +1,70 @@
+Index: Controller/Secant_Controller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Controller/Secant_Controller.py b/Controller/Secant_Controller.py
+--- a/Controller/Secant_Controller.py	(revision e672745014c55f513dd31588ae9ecb382b407d3c)
++++ b/Controller/Secant_Controller.py	(date 1710636382879)
+@@ -1,0 +1,39 @@
++import sys
++from PySide6 import QtWidgets
++from View.SecantView import MainWindow
++from Model.SecantMethod import SecantSolver
++import os
++
++# Obtener la ruta del directorio actual del script
++current_dir = os.path.dirname(os.path.abspath(__file__))
++stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
++
++class SecantController:
++    def __init__(self):
++        self.app = QtWidgets.QApplication(sys.argv)
++        self.ventana = MainWindow()
++        self.ventana.show()
++
++        # Conectar eventos de la interfaz gráfica a la lógica
++        self.ventana.button_calcular.clicked.connect(self.calcular)
++
++    def calcular(self):
++        expression_function = self.ventana.edit_ecuacion.text()
++        error = float(self.ventana.edit_error.text())
++        xi_minus_1 = float(self.ventana.edit_a.text())
++        xi = float(self.ventana.edit_b.text())
++
++        # Instancia de lógica
++        solver = SecantSolver()
++        solver.init(expression_function, error, xi_minus_1, xi)
++        result = solver.solve()
++
++        # Mostrar resultados
++        self.ventana.edit_resultado.setText(result)
++
++    def run(self):
++        sys.exit(self.app.exec_())
++
++if __name__ == '__main__':
++    controller = SecantController()
++    controller.run()
+Index: View/SecantView.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\nfrom PySide6 import QtCore\r\n\r\nwith open('styleSheet.css', 'r') as f:\r\n    stylesheet = f.read()\r\n\r\n\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.setWindowTitle(\"Método Secante\")\r\n        self.setGeometry(100, 100, 800, 600)\r\n\r\n        # Crear layout principal\r\n        layout = QtWidgets.QVBoxLayout()\r\n\r\n        # Label de Metodo\r\n        label_opcion = QtWidgets.QLabel(\"Metodo Secante\")\r\n        label_opcion.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        layout.addWidget(label_opcion)\r\n\r\n        # Layout para ecuacion y boton de Ayuda\r\n        layout_ecuacion = QtWidgets.QHBoxLayout()\r\n        # Textfield para ecuacion\r\n        self.edit_ecuacion = QtWidgets.QLineEdit()\r\n        self.edit_ecuacion.setPlaceholderText(\"Ingrese la ecuacion (e.g., x^2 - 2)\")\r\n        layout_ecuacion.addWidget(self.edit_ecuacion)\r\n        # Boton Ayuda\r\n        button_a = QtWidgets.QPushButton(\"?\")\r\n        layout_ecuacion.addWidget(button_a)\r\n\r\n        layout.addLayout(layout_ecuacion)\r\n\r\n        # Layout para valores iniciales\r\n        layout_valores = QtWidgets.QHBoxLayout()\r\n        # Label \"Valores Iniciales\"\r\n        label_valores_iniciales = QtWidgets.QLabel(\"Valores Iniciales\")\r\n        layout_valores.addWidget(label_valores_iniciales)\r\n        # Textfield para a\r\n        self.edit_a = QtWidgets.QLineEdit()\r\n        self.edit_a.setPlaceholderText(\"Xi-1\")\r\n        layout_valores.addWidget(self.edit_a)\r\n        # Textfield para b\r\n        self.edit_b = QtWidgets.QLineEdit()\r\n        self.edit_b.setPlaceholderText(\"Xi\")\r\n        layout_valores.addWidget(self.edit_b)\r\n\r\n        layout.addLayout(layout_valores)\r\n\r\n        # Layout para Error\r\n        layout_error = QtWidgets.QHBoxLayout()\r\n        # Label \"Error\"\r\n        label_error = QtWidgets.QLabel(\"Error\")\r\n        layout_error.addWidget(label_error)\r\n        # Textfield para error\r\n        self.edit_error = QtWidgets.QLineEdit()\r\n        self.edit_error.setPlaceholderText('Tolerancia de error')\r\n        layout_error.addWidget(self.edit_error)\r\n\r\n        layout.addLayout(layout_error)\r\n\r\n        # Boton Calcular\r\n        button_calcular = QtWidgets.QPushButton('Calcular')\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(button_calcular)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Layout para Resultado\r\n        layout_resultado = QtWidgets.QHBoxLayout()\r\n        # Label \"Resultado x=\"\r\n        label_resultado = QtWidgets.QLabel('Resultado x=')\r\n        layout_resultado.addWidget(label_resultado)\r\n        # Textfield para resultado\r\n        self.edit_resultado = QtWidgets.QLineEdit()\r\n        self.edit_resultado.setReadOnly(True)\r\n        layout_resultado.addWidget(self.edit_resultado)\r\n\r\n        layout.addLayout(layout_resultado)\r\n\r\n        # Tabla de Resultados\r\n        # Crear tabla\r\n        self.tabla_resultados = QtWidgets.QTableWidget()\r\n        self.tabla_resultados.setColumnCount(6)\r\n        self.tabla_resultados.setHorizontalHeaderLabels([\"Xi-1\", \"Xi\", \"f(Xi-1)\", \"f(Xi)\", \"Xi+1\", \"Error\"])\r\n\r\n        layout.addWidget(self.tabla_resultados)\r\n\r\n        # Botón \"Continuar\"\r\n        button_graficar = QtWidgets.QPushButton(\"Graficar\")\r\n        button_volverMenu = QtWidgets.QPushButton(\"Menu\")\r\n        # Layout para botones volver al Menu y Graficar\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(button_volverMenu)\r\n        button_layout.addWidget(button_graficar)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Widget central\r\n        central_widget = QtWidgets.QWidget()\r\n        central_widget.setLayout(layout)\r\n        self.setCentralWidget(central_widget)\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    app.setStyleSheet(stylesheet)\r\n    ventana = MainWindow()\r\n    ventana.show()\r\n    sys.exit(app.exec())
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/View/SecantView.py b/View/SecantView.py
+--- a/View/SecantView.py	(revision e672745014c55f513dd31588ae9ecb382b407d3c)
++++ b/View/SecantView.py	(date 1710636417964)
+@@ -1,6 +1,11 @@
+ import sys
+ from PySide6 import QtWidgets
+ from PySide6 import QtCore
++import os
++
++# Obtener la ruta del directorio actual del script
++current_dir = os.path.dirname(os.path.abspath(__file__))
++stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+ 
+ with open('styleSheet.css', 'r') as f:
+     stylesheet = f.read()

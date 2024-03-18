@@ -2,16 +2,6 @@ import sys
 from PySide6 import QtWidgets
 from PySide6 import QtCore
 import os
-"""""
-# Obtener la ruta del directorio actual del script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
-
-# Abrir el archivo CSS
-with open(stylesheet_path, 'r') as f:
-    stylesheet = f.read()
-"""""
-
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -117,6 +107,9 @@ class MainWindow(QtWidgets.QMainWindow):
         central_widget = QtWidgets.QWidget()
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+    def show_error_message(self, error_message):
+        QtWidgets.QMessageBox.critical(self, "Error", error_message)
 
 
 if __name__ == "__main__":

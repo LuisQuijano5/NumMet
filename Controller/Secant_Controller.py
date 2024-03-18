@@ -5,7 +5,7 @@ from PySide6.QtCore import Qt
 from View.SecantView import MainWindow
 from Model.SecantMethod import SecantSolver
 from Model.Equation_Solver import Function
-from PySide6 import QtGui
+import sympy as sp
 
 
 class SecantController:
@@ -18,33 +18,64 @@ class SecantController:
         self.ventana.button_calcular.clicked.connect(self.calcular)
         self.ventana.button_graficar.clicked.connect(self.graficar)
 
+        # Crear una instancia del solucionador de la ecuación
+        self.solver = SecantSolver()
+
     def calcular(self):
-        expression_function = self.ventana.edit_ecuacion.text()
-        error = float(self.ventana.edit_error.text())
-        xi_minus_1 = float(self.ventana.edit_a.text())
-        xi = float(self.ventana.edit_b.text())
+        try:
+            expression_function = self.ventana.edit_ecuacion.text()
+            error = float(self.ventana.edit_error.text())
+            xi_minus_1 = float(self.ventana.edit_a.text())
+            xi = float(self.ventana.edit_b.text())
 
-        # Instancia de lógica
-        solver = SecantSolver()
-        solver.init(expression_function, error, xi_minus_1, xi)
-        solver_results = solver.solve()
+            # Verificar si la expresión es una función válida
+            if not self.is_valid_function(expression_function):
+                raise ValueError("La expresión ingresada no es una función válida.")
 
-        # Limpiar la tabla antes de agregar nuevos resultados
-        self.ventana.tabla_resultados.clearContents()
-        self.ventana.tabla_resultados.setRowCount(0)
+            # Limpiar la tabla antes de agregar nuevos resultados
+            self.ventana.tabla_resultados.clearContents()
+            self.ventana.tabla_resultados.setRowCount(0)
 
-        # Agregar los resultados a la tabla
-        for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error) in enumerate(solver_results):
-            self.ventana.tabla_resultados.insertRow(i)
-            self.ventana.tabla_resultados.setItem(i, 0, QtWidgets.QTableWidgetItem(str(xi_minus_1)))
-            self.ventana.tabla_resultados.setItem(i, 1, QtWidgets.QTableWidgetItem(str(xi)))
-            self.ventana.tabla_resultados.setItem(i, 2, QtWidgets.QTableWidgetItem(str(f_xi_minus_1)))
-            self.ventana.tabla_resultados.setItem(i, 3, QtWidgets.QTableWidgetItem(str(f_xi)))
-            self.ventana.tabla_resultados.setItem(i, 4, QtWidgets.QTableWidgetItem(str(xi_plus_1)))
-            self.ventana.tabla_resultados.setItem(i, 5, QtWidgets.QTableWidgetItem(str(error)))
+            # Inicializar el solucionador con los valores ingresados
+            self.solver.init(expression_function, error, xi_minus_1, xi)
 
-        # Mostrar resultados
-        self.ventana.edit_resultado.setText(str(solver_results[-1][4]))
+            # Resolver la ecuación y obtener los resultados
+            solver_results, error_message = self.solver.solve()
+
+            # Agregar los resultados a la tabla
+            for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error) in enumerate(solver_results):
+                self.ventana.tabla_resultados.insertRow(i)
+                self.ventana.tabla_resultados.setItem(i, 0, QtWidgets.QTableWidgetItem(str(xi_minus_1)))
+                self.ventana.tabla_resultados.setItem(i, 1, QtWidgets.QTableWidgetItem(str(xi)))
+                self.ventana.tabla_resultados.setItem(i, 2, QtWidgets.QTableWidgetItem(str(f_xi_minus_1)))
+                self.ventana.tabla_resultados.setItem(i, 3, QtWidgets.QTableWidgetItem(str(f_xi)))
+                self.ventana.tabla_resultados.setItem(i, 4, QtWidgets.QTableWidgetItem(str(xi_plus_1)))
+                self.ventana.tabla_resultados.setItem(i, 5, QtWidgets.QTableWidgetItem(str(error)))
+
+            # Mostrar el último resultado en el campo de texto
+            if solver_results:
+                self.ventana.edit_resultado.setText(str(solver_results[-1][4]))
+            else:
+                # No se pudieron calcular resultados, por lo que no hay nada que mostrar
+                self.ventana.edit_resultado.setStyleSheet("color: red;")  # Color rojo
+                self.ventana.edit_resultado.setText("No se pudo calcular debido a una entrada inválida.")
+
+            if error_message.startswith("Posible divergencia") or error_message.startswith("La función es casi constante" or error_message.startswith("El cálculo de la siguiente")):
+                # Manejo específico para la excepción de posible divergencia
+                self.ventana.show_error_message(error_message + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
+            else:
+                # Otros errores
+                self.ventana.show_error_message(
+                    "Error: No es posible resolver la ecuación debido a un problema identificado.")
+        except ValueError as e:
+            # Capturar la excepción de división por cero en la función y mostrar el mensaje de error
+            self.ventana.show_error_message(str(e))
+
+    def is_valid_function(self, expression):
+        # Intentar crear una expresión SymPy con la cadena de entrada
+        expr = sp.sympify(expression)
+        # Verificar si la expresión contiene al menos una variable
+        return bool(expr.free_symbols)
 
     def graficar(self):
         # Método para graficar la función
