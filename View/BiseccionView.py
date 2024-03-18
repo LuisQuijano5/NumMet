@@ -32,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Textfield para ecuacion
         self.edit_ecuacion = QtWidgets.QLineEdit()
         (self.edit_ecuacion.setPlaceholderText
-         ("Ingrese la ecuacion (e.g., x^2 - 2)"))
+         ("Ingrese la ecuacion (e.g., x**2 - 2)"))
         layout_ecuacion.addWidget(self.edit_ecuacion)
         # Boton Ayuda
         button_a = QtWidgets.QPushButton("?")
