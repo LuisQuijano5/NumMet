@@ -138,28 +138,34 @@ class SeidelController:
         self.createResults(historial, solX)
 
     def createResults(self, historial, solX):
-        print(historial)
-        print(solX)
+        self.updateResults(solX, historial)
+        self.view.stacked_layout.setCurrentIndex(1)
+        #print(historial)
+        #print(solX)
 
     def goMain(self):
         self.view.stacked_layout.setCurrentIndex(0)
 
-    def updateResults(self, solution, list):
+    def updateResults(self, solX, historial):
         #clear view
         for matrix_widget in self.matrix_widgets:
             matrix_widget.setParent(None)
 
         # Create and add new matrix widgets
-        for matrix in list:
-            matrix_widget = MatrixWidget(matrix)
-            self.results_view.addWidget(matrix_widget)
-            self.matrix_widgets.append(matrix_widget)
+        #for matrix in list:
+         #   matrix_widget = MatrixWidget(matrix)
+          #  self.results_view.addWidget(matrix_widget)
+           # self.matrix_widgets.append(matrix_widget)
+
+        matrix_widget=QLabel()
+        matrix_widget.setText(historial)
+        self.results_view.addWidget(matrix_widget)
 
         x_values = QHBoxLayout()
         x_values.setSpacing(15)
         x_values_container = QWidget()
         x_values_container.setStyleSheet("background-color: #dddddd")
-        for i, x in enumerate(solution):
+        for i, x in enumerate(solX):
             label = QLabel(f"x{i+1}: " + str(x))
             label.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
             x_values.addWidget(label)
