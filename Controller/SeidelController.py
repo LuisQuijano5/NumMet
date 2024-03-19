@@ -169,6 +169,7 @@ class SeidelController:
         his_cont.setLayout(layout_his)
         his_cont.setGeometry(100,100,400,200)
 
+        self.matrix_widgets.append(labelHis)
         self.results_view.addWidget(his_cont)
 
         x_values = QHBoxLayout()
