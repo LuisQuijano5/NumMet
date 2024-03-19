@@ -36,8 +36,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.edit_ecuacion.setPlaceholderText("De click en el boton de Ayuda (Derecha) para saber como ingresar la funcion")
         layout_ecuacion.addWidget(self.edit_ecuacion)
         # Boton Ayuda
-        button_a = QtWidgets.QPushButton("?")
-        layout_ecuacion.addWidget(button_a)
+        self.button_a = QtWidgets.QPushButton("?")
+        layout_ecuacion.addWidget(self.button_a)
 
         layout.addLayout(layout_ecuacion)
 
@@ -70,9 +70,9 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addLayout(layout_error)
 
         # Boton Calcular
-        button_calcular = QtWidgets.QPushButton('Calcular')
+        self.button_calcular = QtWidgets.QPushButton('Calcular')
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(button_calcular)
+        button_layout.addWidget(self.button_calcular)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         
         layout.addLayout(button_layout)
@@ -96,15 +96,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.tabla_resultados.setColumnCount(7)
         self.tabla_resultados.setHorizontalHeaderLabels(["a", "b", "f(a)", "f(b)", "X_r", "f(X_r)", "Error"])
 
+
         layout.addWidget(self.tabla_resultados)
 
         # Botón "Continuar"
-        button_graficar = QtWidgets.QPushButton("Graficar")
-        button_volverMenu = QtWidgets.QPushButton("Menu")
+        self.button_graficar = QtWidgets.QPushButton("Graficar")
+        self.button_volverMenu = QtWidgets.QPushButton("Menu")
         # Layout para botones volver al Menu y Graficar
         button_layout = QtWidgets.QHBoxLayout()
-        button_layout.addWidget(button_volverMenu)
-        button_layout.addWidget(button_graficar)
+        button_layout.addWidget(self.button_volverMenu)
+        button_layout.addWidget(self.button_graficar)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         layout.addLayout(button_layout)

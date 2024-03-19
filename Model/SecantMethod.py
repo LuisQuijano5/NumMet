@@ -54,7 +54,8 @@ class SecantSolver:
                 xi_plus_1 = round(xi_plus_1, 6)
                 approximate_error = round(approximate_error, 6)
 
-                results.append((self.xi_minus_1, self.xi, self.function.evaluate(self.xi_minus_1),
+                results.append(
+                    (self.xi_minus_1, self.xi, self.function.evaluate(self.xi_minus_1),
                                 self.function.evaluate(self.xi), xi_plus_1, approximate_error))
 
                 #print(f"xi_minus_1: {self.xi_minus_1}, xi: {self.xi}")
