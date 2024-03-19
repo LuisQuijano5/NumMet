@@ -139,6 +139,7 @@ class SeidelController:
 
     def createResults(self, historial, solX):
         self.updateResults(solX, historial)
+        print(historial)
         self.view.stacked_layout.setCurrentIndex(1)
         #print(historial)
         #print(solX)
@@ -159,6 +160,7 @@ class SeidelController:
 
         matrix_widget=QLabel()
         matrix_widget.setText(historial)
+        matrix_widget.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
         self.results_view.addWidget(matrix_widget)
 
         x_values = QHBoxLayout()

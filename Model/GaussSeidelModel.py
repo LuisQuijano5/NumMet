@@ -22,9 +22,9 @@ def gauss_seidel(matrizComp, ep):
     errores=[]
     for i in range(n):
         errores.append(0)
-        heades.append("x"+str(i+1))
-        heades.append("xn"+str(i+1))
-        heades.append("e"+str(i+1))
+        heades.append(f"x{i+1}")
+        heades.append(f"xn{i+1}")
+        heades.append(f"e{i+1}")
 
     error=ep*2
     itera=1
@@ -54,6 +54,6 @@ def gauss_seidel(matrizComp, ep):
     if(itera>iteramax):
         X=0
 
-    table=tabulate(sol,headers=heades,tablefmt='fancy_grid',floatfmt='.6f')
+    table=tabulate(sol,headers=heades,tablefmt='plain',floatfmt='.6f')
 
     return table,X
