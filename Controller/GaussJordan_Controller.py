@@ -3,8 +3,6 @@ to do:
 resize window when less eq
 format solution when a list is returned
 """
-import os
-import sys
 
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
@@ -169,8 +167,8 @@ class GaussJordanController:
             if(not self.check_row(aux)): return
             self.matrix.append(aux)
 
-        for i in self.matrix:
-            print(i)
+        #for i in self.matrix:
+        #    print(i)
 
         try:
             solution, state = gauss_jordan(self.matrix)
@@ -222,9 +220,3 @@ class GaussJordanController:
         x = (screen_geometry.width() - self.view.width()) / 2
         y = (screen_geometry.height() - self.view.height()) / 2
         self.view.move(x, y)
-
-def main():
-    GaussJordanController()
-
-if __name__ == "__main__":
-    main()
