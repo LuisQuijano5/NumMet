@@ -54,6 +54,6 @@ def gauss_seidel(matrizComp, ep):
     if(itera>iteramax):
         X=0
 
-    table=tabulate(sol,headers=heades,tablefmt='plain',floatfmt='.6f')
+    table=tabulate(sol,headers=heades,tablefmt='plain',numalign='decimal',floatfmt='.6f')
 
     return table,X

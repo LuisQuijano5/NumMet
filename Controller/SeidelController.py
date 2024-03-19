@@ -151,26 +151,31 @@ class SeidelController:
         #clear view
         for matrix_widget in self.matrix_widgets:
             matrix_widget.setParent(None)
-
+        labelHis=QLabel()
         # Create and add new matrix widgets
         #for matrix in list:
          #   matrix_widget = MatrixWidget(matrix)
           #  self.results_view.addWidget(matrix_widget)
            # self.matrix_widgets.append(matrix_widget)
 
-        matrix_widget=QLabel()
-        matrix_widget.setText(historial)
-        matrix_widget.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
-        self.results_view.addWidget(matrix_widget)
+        labelHis.setText(historial)
+        #matrix_widget.setText(historial)
+        labelHis.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
+        self.results_view.addWidget(labelHis)
 
         x_values = QHBoxLayout()
         x_values.setSpacing(15)
         x_values_container = QWidget()
         x_values_container.setStyleSheet("background-color: #dddddd")
-        for i, x in enumerate(solX):
-            label = QLabel(f"x{i+1}: " + str(x))
+        if(solX==0):
+            label=QLabel('El sistema no converge')
             label.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
             x_values.addWidget(label)
+        else:
+            for i, x in enumerate(solX):
+                label = QLabel(f"x{i + 1}: " + str(x))
+                label.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
+                x_values.addWidget(label)
         x_values_container.setLayout(x_values)
         self.matrix_widgets.append(x_values_container)
         self.results_view.addWidget(x_values_container)
