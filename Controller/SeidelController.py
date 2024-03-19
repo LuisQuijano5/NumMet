@@ -126,7 +126,7 @@ class SeidelController:
         try:
             historial, solX = gauss_seidel(self.matrix, self.ep)
         except:
-            self.view.warning("Check your equations please, be sure to not enter a singular matrix")
+            self.view.warning("Revisa que el sistema este completo y asegurese de ingresar un error permitido")
             return
         # print("Solution:", solution)
         # print("State after each iteration:")
@@ -141,27 +141,35 @@ class SeidelController:
         self.updateResults(solX, historial)
         print(historial)
         self.view.stacked_layout.setCurrentIndex(1)
-        #print(historial)
-        #print(solX)
 
     def goMain(self):
         self.view.stacked_layout.setCurrentIndex(0)
 
     def updateResults(self, solX, historial):
         #clear view
+
         for matrix_widget in self.matrix_widgets:
             matrix_widget.setParent(None)
-        labelHis=QLabel()
+
+
         # Create and add new matrix widgets
         #for matrix in list:
          #   matrix_widget = MatrixWidget(matrix)
           #  self.results_view.addWidget(matrix_widget)
            # self.matrix_widgets.append(matrix_widget)
+        layout_his=QVBoxLayout()
+        his_cont=QWidget()
 
-        labelHis.setText(historial)
-        #matrix_widget.setText(historial)
-        labelHis.setStyleSheet("QLabel {font-weight: bold; font-size: 15px;}")
-        self.results_view.addWidget(labelHis)
+        html_his=f"<pre>{historial}</pre>"
+
+        labelHis=QLabel()
+        labelHis.setText(html_his)
+
+        layout_his.addWidget(labelHis)
+        his_cont.setLayout(layout_his)
+        his_cont.setGeometry(100,100,400,200)
+
+        self.results_view.addWidget(his_cont)
 
         x_values = QHBoxLayout()
         x_values.setSpacing(15)
