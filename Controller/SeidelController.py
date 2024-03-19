@@ -25,13 +25,13 @@ class MatrixWidget(QWidget):
 
 class SeidelController:
 
-    def __init__(self):
+    def __init__(self, app):
         self.matrix_widgets = []
         self.rows = 2
         self.cols = 2
         self.spin_matrix = []
         #rebo: conecta asi tu view en tu controller, mandale el titulo y self
-        self.app = QtWidgets.QApplication(sys.argv)
+        self.app = app
         self.view = MainWindow("Gauss Seidel", self)
         self.setAppStyles()
 

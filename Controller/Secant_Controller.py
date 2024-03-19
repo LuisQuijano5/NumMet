@@ -223,7 +223,7 @@ class SecantController:
         self.ventana.move(x, y)
 
     def run(self):
-        sys.exit(self.app.exec_())
+        sys.exit(self.app.exec())
 
 if __name__ == '__main__':
     controller = SecantController()
