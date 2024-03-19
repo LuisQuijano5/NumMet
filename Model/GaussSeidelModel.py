@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 def separar_matriz(matriz):
     n = len(matriz)
     matriz_cuadrada = []
@@ -7,12 +9,6 @@ def separar_matriz(matriz):
         vector.append(fila[n])
     return matriz_cuadrada, vector
 
-
-#matrixComp = [[6, -1, -1, 4, 17],
-#              [1, -10, 2, -1, -17],
-#              [3, -2, 8, -1, 19],
-#              [1, 1, 1, -5, -14]]
-
 def gauss_seidel(matrizComp, ep):
 
     coeficientes,vectorCtes = separar_matriz(matrizComp)
@@ -21,20 +17,22 @@ def gauss_seidel(matrizComp, ep):
     X = [0] * n
 
     iteramax=100
-    historial = "itera | "
+    heades = ['itera']
 
     errores=[]
     for i in range(n):
         errores.append(0)
-        historial=historial+"x"+str(i)+" | xn"+str(i)+" | e"+str(i)+" | "
+        heades.append("x"+str(i+1))
+        heades.append("xn"+str(i+1))
+        heades.append("e"+str(i+1))
 
-    historial=historial+"\n"
     error=ep*2
     itera=1
 
-
+    sol=[]
     while(error>=ep and itera<=iteramax):
-        historial=historial+str(itera)+" | "
+        row=[]
+        row.append(itera)
         for i in range(n):
             suma = sum(coeficientes[i][j] * X[j] for j in range(n) if j != i)
 
@@ -42,14 +40,20 @@ def gauss_seidel(matrizComp, ep):
 
             errores[i]=round(abs(1-X[i]/nuevo)*100,6)
 
-            historial=historial + str(X[i])+" | "+str(nuevo)+" | "+str(errores[i])+" | "
+            row.append(X[i])
+            row.append(nuevo)
+            row.append(errores[i])
 
             X[i]=nuevo
+
+        sol.append(row)
         error=max(errores)
         itera=itera+1
-        historial=historial+"\n"
+
 
     if(itera>iteramax):
         X=0
 
-    return historial,X
+    table=tabulate(sol,headers=heades,tablefmt='fancy_grid',floatfmt='.6f')
+
+    return table,X
