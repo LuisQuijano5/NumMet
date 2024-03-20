@@ -1,0 +1,263 @@
+Index: Model/Bisection_Method.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport sympy\r\nfrom sympy import Symbol\r\nfrom PySide6 import QtWidgets, QtCore\r\nimport sys\r\nimport sympy as sym\r\n\r\nfrom View.BiseccionView import MainWindow\r\n#with open('styleSheet.css', 'r') as f:\r\n   # stylesheet = f.read()\r\n#with open(stylesheet_path, 'r') as f:\r\n #   stylesheet = f.read()\r\n\r\nclass Bisection_Method():\r\n    def __init__(self):\r\n        self.expression = sym.parse_expr(\"(x**4)-(2*x**3)-(12*x**2)+(16*x)-(40)\")#MainWindow.__init__().edit_ecuacion)\r\n        self.a=4.2#MainWindow.__init__().edit_a\r\n        self.Fa=None\r\n        self.b=4.4#MainWindow.__init__().edit_b\r\n        self.Fb=None\r\n        self.Xr=None\r\n        self.Xrminus1=None\r\n        self.FXr=None\r\n        self.aprovederror=0.01#MainWindow.__init__().edit_error\r\n        self.calculatederror=100\r\n        self.flag=1\r\n\r\n    def evaluateExpression(self,x):\r\n        return self.expression.subs(sym.Symbol('x'), x)\r\n\r\n    def iteration(self):\r\n        ##print(self.a)\r\n        while( self.calculatederror>self.aprovederror):\r\n            #print(self.a)\r\n            self.Fa=self.evaluateExpression(self.a)\r\n            self.Fb=self.evaluateExpression(self.b)\r\n\r\n            self.Xr=(self.a+self.b)/2\r\n            self.FXr=self.evaluateExpression(self.Xr)\r\n            if(self.Xrminus1!=None):\r\n                self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100\r\n            else:self.calculatederror=100\r\n\r\n            self.Xrminus1 = self.Xr\r\n            self.flag = self.FXr * self.Fa\r\n            #print(\"a1=\"+str(self.a))\r\n            #here we save the a and b values in the table (before the next change)\r\n            if(self.flag>0):self.a=self.Xr\r\n            else:self.b=self.Xr\r\n            #here we save the rest of the variables on the table (the loop starts again)\r\n\r\n            #print(\"b=\"+str(self.b))\r\n            #print(\"a=\" + str(self.a))\r\n            #print(\"fa=\" + str(self.Fa))\r\n            #print(\"fb=\" + str(self.Fb))\r\n            #print(\"fxr=\" + str(self.FXr))\r\n            #print(\"flag=\" + str(self.flag))\r\n\r\n#test=Bisection_Method()\r\n#test.iteration()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/Bisection_Method.py b/Model/Bisection_Method.py
+--- a/Model/Bisection_Method.py	(revision 05f69a454889868120bd2fb42008317064789d8f)
++++ b/Model/Bisection_Method.py	(date 1710718357645)
+@@ -14,15 +14,15 @@
+ 
+ class Bisection_Method():
+     def __init__(self):
+-        self.expression = sym.parse_expr("(x**4)-(2*x**3)-(12*x**2)+(16*x)-(40)")#MainWindow.__init__().edit_ecuacion)
+-        self.a=4.2#MainWindow.__init__().edit_a
++        self.expression = sym.parse_expr(MainWindow.__init__().edit_ecuacion.text())#MainWindow.__init__().edit_ecuacion)
++        self.a=float(MainWindow.__init__().edit_a.text())
+         self.Fa=None
+-        self.b=4.4#MainWindow.__init__().edit_b
++        self.b=float(MainWindow.__init__().edit_b.text())
+         self.Fb=None
+         self.Xr=None
+         self.Xrminus1=None
+         self.FXr=None
+-        self.aprovederror=0.01#MainWindow.__init__().edit_error
++        self.aprovederror=MainWindow.__init__().edit_error
+         self.calculatederror=100
+         self.flag=1
+ 
+@@ -33,11 +33,13 @@
+         ##print(self.a)
+         while( self.calculatederror>self.aprovederror):
+             #print(self.a)
++                #a and b evaluate
+             self.Fa=self.evaluateExpression(self.a)
+             self.Fb=self.evaluateExpression(self.b)
+-
++                #calculating xr and evaluate
+             self.Xr=(self.a+self.b)/2
+             self.FXr=self.evaluateExpression(self.Xr)
++                #error frame calculus
+             if(self.Xrminus1!=None):
+                 self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100
+             else:self.calculatederror=100
+@@ -46,16 +48,20 @@
+             self.flag = self.FXr * self.Fa
+             #print("a1="+str(self.a))
+             #here we save the a and b values in the table (before the next change)
++                #a and b changes depending on flag value
+             if(self.flag>0):self.a=self.Xr
+             else:self.b=self.Xr
+             #here we save the rest of the variables on the table (the loop starts again)
+ 
+-            #print("b="+str(self.b))
+-            #print("a=" + str(self.a))
+-            #print("fa=" + str(self.Fa))
+-            #print("fb=" + str(self.Fb))
+-            #print("fxr=" + str(self.FXr))
+-            #print("flag=" + str(self.flag))
++            print("b="+str(self.b))
++            print("a=" + str(self.a))
++            print("fa=" + str(self.Fa))
++            print("fb=" + str(self.Fb))
++            print("xr=" + str(self.Xr))
++            print("fxr=" + str(self.FXr))
++            print("flag=" + str(self.flag))
+ 
+-#test=Bisection_Method()
+-#test.iteration()
++
++#some tests
++test=Bisection_Method()
++test.iteration()
+Index: View/SecantView.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\nfrom PySide6 import QtCore\r\nimport os\r\n\"\"\"\"\"\r\n# Obtener la ruta del directorio actual del script\r\ncurrent_dir = os.path.dirname(os.path.abspath(__file__))\r\nstylesheet_path = os.path.join(current_dir, 'styleSheet.css')\r\n\r\n# Abrir el archivo CSS\r\nwith open(stylesheet_path, 'r') as f:\r\n    stylesheet = f.read()\r\n\"\"\"\"\"\r\n\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.setWindowTitle(\"Método Secante\")\r\n        self.setGeometry(100, 100, 800, 600)\r\n\r\n        # Cargar los estilos CSS\r\n        current_dir = os.path.dirname(os.path.abspath(__file__))\r\n        stylesheet_path = os.path.join(current_dir, 'styleSheet.css')\r\n        with open(stylesheet_path, 'r') as f:\r\n            stylesheet = f.read()\r\n        self.setStyleSheet(stylesheet)\r\n\r\n        # Crear layout principal\r\n        layout = QtWidgets.QVBoxLayout()\r\n\r\n        # Label de Metodo\r\n        label_opcion = QtWidgets.QLabel(\"Metodo Secante\")\r\n        label_opcion.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        layout.addWidget(label_opcion)\r\n\r\n        # Layout para ecuacion y boton de Ayuda\r\n        layout_ecuacion = QtWidgets.QHBoxLayout()\r\n        # Textfield para ecuacion\r\n        self.edit_ecuacion = QtWidgets.QLineEdit()\r\n        self.edit_ecuacion.setPlaceholderText(\"Ingrese la ecuacion (e.g., x^2 - 2)\")\r\n        layout_ecuacion.addWidget(self.edit_ecuacion)\r\n        # Boton Ayuda\r\n        button_a = QtWidgets.QPushButton(\"?\")\r\n        layout_ecuacion.addWidget(button_a)\r\n\r\n        layout.addLayout(layout_ecuacion)\r\n\r\n        # Layout para valores iniciales\r\n        layout_valores = QtWidgets.QHBoxLayout()\r\n        # Label \"Valores Iniciales\"\r\n        label_valores_iniciales = QtWidgets.QLabel(\"Valores Iniciales\")\r\n        layout_valores.addWidget(label_valores_iniciales)\r\n        # Textfield para a\r\n        self.edit_a = QtWidgets.QLineEdit()\r\n        self.edit_a.setPlaceholderText(\"Xi-1\")\r\n        layout_valores.addWidget(self.edit_a)\r\n        # Textfield para b\r\n        self.edit_b = QtWidgets.QLineEdit()\r\n        self.edit_b.setPlaceholderText(\"Xi\")\r\n        layout_valores.addWidget(self.edit_b)\r\n\r\n        layout.addLayout(layout_valores)\r\n\r\n        # Layout para Error\r\n        layout_error = QtWidgets.QHBoxLayout()\r\n        # Label \"Error\"\r\n        label_error = QtWidgets.QLabel(\"Error\")\r\n        layout_error.addWidget(label_error)\r\n        # Textfield para error\r\n        self.edit_error = QtWidgets.QLineEdit()\r\n        self.edit_error.setPlaceholderText('Tolerancia de error')\r\n        layout_error.addWidget(self.edit_error)\r\n\r\n        layout.addLayout(layout_error)\r\n\r\n        # Boton Calcular\r\n        self.button_calcular = QtWidgets.QPushButton('Calcular')\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(self.button_calcular)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Layout para Resultado\r\n        layout_resultado = QtWidgets.QHBoxLayout()\r\n        # Label \"Resultado x=\"\r\n        label_resultado = QtWidgets.QLabel('Resultado x=')\r\n        layout_resultado.addWidget(label_resultado)\r\n        # Textfield para resultado\r\n        self.edit_resultado = QtWidgets.QLineEdit()\r\n        self.edit_resultado.setReadOnly(True)\r\n        layout_resultado.addWidget(self.edit_resultado)\r\n\r\n        layout.addLayout(layout_resultado)\r\n\r\n        # Tabla de Resultados\r\n        # Crear tabla\r\n        self.tabla_resultados = QtWidgets.QTableWidget()\r\n        self.tabla_resultados.setColumnCount(6)\r\n        self.tabla_resultados.setHorizontalHeaderLabels([\"Xi-1\", \"Xi\", \"f(Xi-1)\", \"f(Xi)\", \"Xi+1\", \"Error\"])\r\n\r\n        layout.addWidget(self.tabla_resultados)\r\n\r\n        # Botón \"Continuar\" y \"Graficar\"\r\n        self.button_graficar = QtWidgets.QPushButton(\"Graficar\")\r\n        self.button_volverMenu = QtWidgets.QPushButton(\"Menu\")\r\n        # Layout para botones volver al Menu y Graficar\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(self.button_volverMenu)\r\n        button_layout.addWidget(self.button_graficar)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Widget central\r\n        central_widget = QtWidgets.QWidget()\r\n        central_widget.setLayout(layout)\r\n        self.setCentralWidget(central_widget)\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    ventana = MainWindow()\r\n    ventana.show()\r\n    sys.exit(app.exec())
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/View/SecantView.py b/View/SecantView.py
+--- a/View/SecantView.py	(revision 05f69a454889868120bd2fb42008317064789d8f)
++++ b/View/SecantView.py	(date 1710716721117)
+@@ -2,15 +2,7 @@
+ from PySide6 import QtWidgets
+ from PySide6 import QtCore
+ import os
+-"""""
+-# Obtener la ruta del directorio actual del script
+-current_dir = os.path.dirname(os.path.abspath(__file__))
+-stylesheet_path = os.path.join(current_dir, 'styleSheet.css')
+ 
+-# Abrir el archivo CSS
+-with open(stylesheet_path, 'r') as f:
+-    stylesheet = f.read()
+-"""""
+ 
+ class MainWindow(QtWidgets.QMainWindow):
+ 
+@@ -38,7 +30,7 @@
+         layout_ecuacion = QtWidgets.QHBoxLayout()
+         # Textfield para ecuacion
+         self.edit_ecuacion = QtWidgets.QLineEdit()
+-        self.edit_ecuacion.setPlaceholderText("Ingrese la ecuacion (e.g., x^2 - 2)")
++        self.edit_ecuacion.setPlaceholderText("Ingrese la ecuacion (e.g., x**2 - 2)")
+         layout_ecuacion.addWidget(self.edit_ecuacion)
+         # Boton Ayuda
+         button_a = QtWidgets.QPushButton("?")
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 05f69a454889868120bd2fb42008317064789d8f)
++++ b/.idea/misc.xml	(date 1710714918239)
+@@ -3,5 +3,5 @@
+   <component name="Black">
+     <option name="sdkName" value="Python 3.11 (NumMet)" />
+   </component>
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (NumMet)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"bissection method created, waiting for future instruccions or modifies\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Model/Bisection_Method.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Model/Bisection_Method.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/View/BiseccionView.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/BiseccionView.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"ProjectErrors\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,\r\n    &quot;Python.BiseccionView.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.Bisection_Method.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.Equation_Solver.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.Gauss.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.GaussJordan_Controller.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.SecantMethod.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.SecantView.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.Secant_Controller.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.main.executor&quot;: &quot;Run&quot;,\r\n    &quot;Python.test.executor&quot;: &quot;Run&quot;,\r\n    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;master&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n      <workItem from=\"1710209591103\" duration=\"993000\" />\r\n      <workItem from=\"1710233790481\" duration=\"6344000\" />\r\n      <workItem from=\"1710515251428\" duration=\"1997000\" />\r\n      <workItem from=\"1710638831222\" duration=\"2810000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$MainModel.coverage\" NAME=\"MainModel Coverage Results\" MODIFIED=\"1709835017577\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Secant_Controller.coverage\" NAME=\"Secant_Controller Coverage Results\" MODIFIED=\"1710476646517\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Controller\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$test.coverage\" NAME=\"test Coverage Results\" MODIFIED=\"1710239585671\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$BiseccionView.coverage\" NAME=\"BiseccionView Coverage Results\" MODIFIED=\"1710637907695\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Bisection_Method.coverage\" NAME=\"Bisection_Method Coverage Results\" MODIFIED=\"1710641632417\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$SecantMethod.coverage\" NAME=\"SecantMethod Coverage Results\" MODIFIED=\"1710476626537\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$GaussJordan_Controller.coverage\" NAME=\"GaussJordan_Controller Coverage Results\" MODIFIED=\"1710239475903\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Controller\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Equation_Solver.coverage\" NAME=\"Equation_Solver Coverage Results\" MODIFIED=\"1710469430637\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$SecantView.coverage\" NAME=\"SecantView Coverage Results\" MODIFIED=\"1710476661020\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Gauss.coverage\" NAME=\"Gauss Coverage Results\" MODIFIED=\"1710240161091\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 05f69a454889868120bd2fb42008317064789d8f)
++++ b/.idea/workspace.xml	(date 1710718600855)
+@@ -4,11 +4,14 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="bissection method created, waiting for future instruccions or modifies">
++    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="Bisection_Method.py and BiseccionView.py fixed/modified. Still needs to link to table&#10;safe commit">
+       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_03_2024_22_59__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_03_2024_22_59__Changes_.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_03_2024_9_57__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_16_03_2024_9_57__Changes_.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Controller/grafica.png" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/grafica.png" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Model/Bisection_Method.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Bisection_Method.py" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/View/BiseccionView.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/BiseccionView.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/View/SecantView.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/SecantView.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -39,31 +42,33 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+-    &quot;Python.BiseccionView.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.Bisection_Method.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.Equation_Solver.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.Gauss.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.GaussJordan_Controller.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.SecantMethod.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.SecantView.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.Secant_Controller.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "ASKED_ADD_EXTERNAL_FILES": "true",
++    "Python.BiseccionView.executor": "Run",
++    "Python.Bisection_Method.executor": "Run",
++    "Python.Equation_Solver.executor": "Run",
++    "Python.Gauss.executor": "Run",
++    "Python.GaussJordan_Controller.executor": "Run",
++    "Python.MainWindow.executor": "Run",
++    "Python.MenuMethodsWiindow.executor": "Run",
++    "Python.SecantMethod.executor": "Run",
++    "Python.SecantView.executor": "Run",
++    "Python.Secant_Controller.executor": "Run",
++    "Python.main.executor": "Run",
++    "Python.test.executor": "Run",
++    "RunOnceActivity.OpenProjectViewOnStart": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "git-widget-placeholder": "master",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+@@ -85,8 +90,19 @@
+       <workItem from="1710209591103" duration="993000" />
+       <workItem from="1710233790481" duration="6344000" />
+       <workItem from="1710515251428" duration="1997000" />
+-      <workItem from="1710638831222" duration="2810000" />
++      <workItem from="1710638831222" duration="3099000" />
++      <workItem from="1710709928199" duration="318000" />
++      <workItem from="1710715909715" duration="2614000" />
+     </task>
++    <task id="LOCAL-00001" summary="Bisection_Method.py and BiseccionView.py fixed/modified. Still needs to link to table">
++      <option name="closed" value="true" />
++      <created>1710641774300</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1710641774300</updated>
++    </task>
++    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -105,18 +121,22 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
++    <MESSAGE value="Bisection_Method.py and BiseccionView.py fixed/modified. Still needs to link to table" />
++    <option name="LAST_COMMIT_MESSAGE" value="Bisection_Method.py and BiseccionView.py fixed/modified. Still needs to link to table" />
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+     <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-    <SUITE FILE_PATH="coverage/NumMet$Secant_Controller.coverage" NAME="Secant_Controller Coverage Results" MODIFIED="1710476646517" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
+-    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1710239585671" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-    <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710637907695" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-    <SUITE FILE_PATH="coverage/NumMet$Bisection_Method.coverage" NAME="Bisection_Method Coverage Results" MODIFIED="1710641632417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
++    <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710716813620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
++    <SUITE FILE_PATH="coverage/NumMet$MainWindow.coverage" NAME="MainWindow Coverage Results" MODIFIED="1710716329943" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
++    <SUITE FILE_PATH="coverage/NumMet$Bisection_Method.coverage" NAME="Bisection_Method Coverage Results" MODIFIED="1710717594656" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$SecantMethod.coverage" NAME="SecantMethod Coverage Results" MODIFIED="1710476626537" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$GaussJordan_Controller.coverage" NAME="GaussJordan_Controller Coverage Results" MODIFIED="1710239475903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
+     <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1710469430637" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-    <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710476661020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
++    <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710716295118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
++    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
++    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1710239585671" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
++    <SUITE FILE_PATH="coverage/NumMet$Secant_Controller.coverage" NAME="Secant_Controller Coverage Results" MODIFIED="1710716419847" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
++    <SUITE FILE_PATH="coverage/NumMet$MenuMethodsWiindow.coverage" NAME="MenuMethodsWiindow Coverage Results" MODIFIED="1710716392533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+     <SUITE FILE_PATH="coverage/NumMet$Gauss.coverage" NAME="Gauss Coverage Results" MODIFIED="1710240161091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+   </component>
+ </project>
+\ No newline at end of file

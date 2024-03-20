@@ -1,0 +1,914 @@
+Index: View/BiseccionView.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\nfrom PySide6 import QtCore\r\nimport os\r\n\r\n# Obtener la ruta del directorio actual del script\r\ncurrent_dir = os.path.dirname(os.path.abspath(__file__))\r\nstylesheet_path = os.path.join(current_dir, 'styleSheet.css')\r\n\r\n#with open('styleSheet.css', 'r') as f:\r\n   # stylesheet = f.read()\r\nwith open(stylesheet_path, 'r') as f:\r\n    stylesheet = f.read()\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.setWindowTitle('Método Bisección')\r\n        self.setGeometry(100, 100, 800, 600)\r\n\r\n        # Crear layout principal\r\n        layout = QtWidgets.QVBoxLayout()\r\n\r\n        # Label de Metodo\r\n        label_opcion = QtWidgets.QLabel(\"Metodo Biseccion\")\r\n        label_opcion.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        layout.addWidget(label_opcion)\r\n\r\n\r\n        # Layout para ecuacion y boton de Ayuda\r\n        layout_ecuacion = QtWidgets.QHBoxLayout()\r\n        # Textfield para ecuacion\r\n        label_funicon = QtWidgets.QLabel(\"Funcion\")\r\n        layout_ecuacion.addWidget(label_funicon)\r\n        self.edit_ecuacion = QtWidgets.QLineEdit()\r\n        self.edit_ecuacion.setPlaceholderText(\"De click en el boton de Ayuda (Derecha) para saber como ingresar la funcion\")\r\n        layout_ecuacion.addWidget(self.edit_ecuacion)\r\n        # Boton Ayuda\r\n        button_a = QtWidgets.QPushButton(\"?\")\r\n        layout_ecuacion.addWidget(button_a)\r\n\r\n        layout.addLayout(layout_ecuacion)\r\n\r\n        # Layout para valores iniciales\r\n        layout_valores = QtWidgets.QHBoxLayout()\r\n        # Label \"Valores Iniciales\"\r\n        label_valores_iniciales = QtWidgets.QLabel('Valores Iniciales')\r\n        layout_valores.addWidget(label_valores_iniciales)\r\n        # Textfield para a\r\n        self.edit_a = QtWidgets.QLineEdit()\r\n        self.edit_a.setPlaceholderText(\"a\")\r\n        layout_valores.addWidget(self.edit_a)\r\n        # Textfield para b\r\n        self.edit_b = QtWidgets.QLineEdit()\r\n        self.edit_b.setPlaceholderText(\"b\")\r\n        layout_valores.addWidget(self.edit_b)\r\n\r\n        layout.addLayout(layout_valores)\r\n\r\n        # Layout para Error\r\n        layout_error = QtWidgets.QHBoxLayout()\r\n        # Label \"Error\"\r\n        label_error = QtWidgets.QLabel(\"Error\")\r\n        layout_error.addWidget(label_error)\r\n        # Textfield para error\r\n        self.edit_error = QtWidgets.QLineEdit()\r\n        self.edit_error.setPlaceholderText('Tolerancia de error')\r\n        layout_error.addWidget(self.edit_error)\r\n\r\n        layout.addLayout(layout_error)\r\n\r\n        # Boton Calcular\r\n        button_calcular = QtWidgets.QPushButton('Calcular')\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(button_calcular)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        \r\n        layout.addLayout(button_layout)\r\n\r\n\r\n        # Layout para Resultado\r\n        layout_resultado = QtWidgets.QHBoxLayout()\r\n        # Label \"Resultado x=\"\r\n        label_resultado = QtWidgets.QLabel('Resultado x=')\r\n        layout_resultado.addWidget(label_resultado)\r\n        # Textfield para resultado\r\n        self.edit_resultado = QtWidgets.QLineEdit()\r\n        self.edit_resultado.setReadOnly(True)\r\n        layout_resultado.addWidget(self.edit_resultado)\r\n\r\n        layout.addLayout(layout_resultado)\r\n\r\n        # Tabla de Resultados\r\n        # Crear tabla\r\n        self.tabla_resultados = QtWidgets.QTableWidget()\r\n        self.tabla_resultados.setColumnCount(7)\r\n        self.tabla_resultados.setHorizontalHeaderLabels([\"a\", \"b\", \"f(a)\", \"f(b)\", \"X_r\", \"f(X_r)\", \"Error\"])\r\n\r\n        layout.addWidget(self.tabla_resultados)\r\n\r\n        # Botón \"Continuar\"\r\n        button_graficar = QtWidgets.QPushButton(\"Graficar\")\r\n        button_volverMenu = QtWidgets.QPushButton(\"Menu\")\r\n        # Layout para botones volver al Menu y Graficar\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(button_volverMenu)\r\n        button_layout.addWidget(button_graficar)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Widget central\r\n        central_widget = QtWidgets.QWidget()\r\n        central_widget.setLayout(layout)\r\n        self.setCentralWidget(central_widget)\r\n\r\nif __name__ == \"__main__\":\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    #app.setStyleSheet(stylesheet)\r\n    ventana = MainWindow()\r\n    ventana.show()\r\n    sys.exit(app.exec())\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/View/BiseccionView.py b/View/BiseccionView.py
+--- a/View/BiseccionView.py	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ b/View/BiseccionView.py	(date 1710808614491)
+@@ -96,6 +96,7 @@
+         self.tabla_resultados.setColumnCount(7)
+         self.tabla_resultados.setHorizontalHeaderLabels(["a", "b", "f(a)", "f(b)", "X_r", "f(X_r)", "Error"])
+ 
++
+         layout.addWidget(self.tabla_resultados)
+ 
+         # Botón "Continuar"
+Index: Model/Bisection_Method.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import numpy as np\r\nimport matplotlib.pyplot as plt\r\nimport sympy\r\nfrom sympy import Symbol\r\nfrom PySide6 import QtWidgets, QtCore\r\nimport sys\r\nimport sympy as sym\r\n\r\nfrom View.BiseccionView import MainWindow\r\n#with open('styleSheet.css', 'r') as f:\r\n   # stylesheet = f.read()\r\n#with open(stylesheet_path, 'r') as f:\r\n #   stylesheet = f.read()\r\n\r\nclass Bisection_Method():\r\n    def __init__(self):\r\n        self.expression = sym.parse_expr(\"(x**4)-(2*x**3)-(12*x**2)+(16*x)-(40)\")#MainWindow.__init__().edit_ecuacion)\r\n        self.a=4.2#MainWindow.__init__().edit_a\r\n        self.Fa=None\r\n        self.b=4.4#MainWindow.__init__().edit_b\r\n        self.Fb=None\r\n        self.Xr=None\r\n        self.Xrminus1=None\r\n        self.FXr=None\r\n        self.aprovederror=0.01#MainWindow.__init__().edit_error\r\n        self.calculatederror=100\r\n        self.flag=1\r\n\r\n    def evaluateExpression(self,x):\r\n        return self.expression.subs(sym.Symbol('x'), x)\r\n\r\n    def iteration(self):\r\n        ##print(self.a)\r\n        while( self.calculatederror>self.aprovederror):\r\n            #print(self.a)\r\n            self.Fa=self.evaluateExpression(self.a)\r\n            self.Fb=self.evaluateExpression(self.b)\r\n\r\n            self.Xr=(self.a+self.b)/2\r\n            self.FXr=self.evaluateExpression(self.Xr)\r\n            if(self.Xrminus1!=None):\r\n                self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100\r\n            else:self.calculatederror=100\r\n\r\n            self.Xrminus1 = self.Xr\r\n            self.flag = self.FXr * self.Fa\r\n            #print(\"a1=\"+str(self.a))\r\n            #here we save the a and b values in the table (before the next change)\r\n            if(self.flag>0):self.a=self.Xr\r\n            else:self.b=self.Xr\r\n            #here we save the rest of the variables on the table (the loop starts again)\r\n\r\n            #print(\"b=\"+str(self.b))\r\n            #print(\"a=\" + str(self.a))\r\n            #print(\"fa=\" + str(self.Fa))\r\n            #print(\"fb=\" + str(self.Fb))\r\n            #print(\"fxr=\" + str(self.FXr))\r\n            #print(\"flag=\" + str(self.flag))\r\n\r\n#test=Bisection_Method()\r\n#test.iteration()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/Bisection_Method.py b/Model/Bisection_Method.py
+--- a/Model/Bisection_Method.py	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ b/Model/Bisection_Method.py	(date 1710863276848)
+@@ -14,30 +14,33 @@
+ 
+ class Bisection_Method():
+     def __init__(self):
+-        self.expression = sym.parse_expr("(x**4)-(2*x**3)-(12*x**2)+(16*x)-(40)")#MainWindow.__init__().edit_ecuacion)
+-        self.a=4.2#MainWindow.__init__().edit_a
++        self.expression = sym.parse_expr(MainWindow.__init__().edit_ecuacion.text())
++        self.a=float(MainWindow.__init__().edit_a.text())
+         self.Fa=None
+-        self.b=4.4#MainWindow.__init__().edit_b
++        self.b=float(MainWindow.__init__().edit_b.text())
+         self.Fb=None
+         self.Xr=None
+         self.Xrminus1=None
+         self.FXr=None
+         self.aprovederror=0.01#MainWindow.__init__().edit_error
+-        self.calculatederror=100
+-        self.flag=1
++        self.calculatederror=100.00
++        self.flag=1.00
+ 
+     def evaluateExpression(self,x):
+         return self.expression.subs(sym.Symbol('x'), x)
+ 
+     def iteration(self):
+-        ##print(self.a)
+-        while( self.calculatederror>self.aprovederror):
++        results = []
++
++        while( self.calculatederror>self.aprovederror and self.flag!=0.00):
+             #print(self.a)
++                #a and b evaluate
+             self.Fa=self.evaluateExpression(self.a)
+             self.Fb=self.evaluateExpression(self.b)
+-
++                #calculating xr and evaluate
+             self.Xr=(self.a+self.b)/2
+             self.FXr=self.evaluateExpression(self.Xr)
++                #error frame calculus
+             if(self.Xrminus1!=None):
+                 self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100
+             else:self.calculatederror=100
+@@ -46,6 +49,9 @@
+             self.flag = self.FXr * self.Fa
+             #print("a1="+str(self.a))
+             #here we save the a and b values in the table (before the next change)
++            results.append(self.a,self.b,self.Fa,self.Fb,self.Xr,self.FXr,self.calculatederror)
++            #xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error
++                #a and b changes depending on flag value
+             if(self.flag>0):self.a=self.Xr
+             else:self.b=self.Xr
+             #here we save the rest of the variables on the table (the loop starts again)
+@@ -54,8 +60,11 @@
+             #print("a=" + str(self.a))
+             #print("fa=" + str(self.Fa))
+             #print("fb=" + str(self.Fb))
++            #print("xr=" + str(self.Xr))
+             #print("fxr=" + str(self.FXr))
+             #print("flag=" + str(self.flag))
+ 
++
++#some tests
+ #test=Bisection_Method()
+ #test.iteration()
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1/shelved.patch	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ /dev/null	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
+@@ -1,159 +0,0 @@
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Modules/main.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/main.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	
+-+++ b/.idea/workspace.xml	
+-@@ -4,9 +4,9 @@
+-     <option name="autoReloadType" value="SELECTIVE" />
+-   </component>
+-   <component name="ChangeListManager">
+--    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+-+    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="Function grapher in equation solver">
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/Modules/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/main.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/View/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/main.py" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-@@ -34,22 +34,55 @@
+-     <option name="hideEmptyMiddlePackages" value="true" />
+-     <option name="showLibraryContents" value="true" />
+-   </component>
+--  <component name="PropertiesComponent"><![CDATA[{
+--  "keyToString": {
+--    "ASKED_ADD_EXTERNAL_FILES": "true",
+--    "Python.main.executor": "Run",
+--    "RunOnceActivity.OpenProjectViewOnStart": "true",
+--    "RunOnceActivity.ShowReadmeOnStart": "true",
+--    "git-widget-placeholder": "master",
+--    "node.js.detected.package.eslint": "true",
+--    "node.js.detected.package.tslint": "true",
+--    "node.js.selected.package.eslint": "(autodetect)",
+--    "node.js.selected.package.tslint": "(autodetect)",
+--    "nodejs_package_manager_path": "npm",
+--    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+--    "vue.rearranger.settings.migration": "true"
+--  }
+--}]]></component>
+-+  <component name="PropertiesComponent">{
+-+  &quot;keyToString&quot;: {
+-+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+-+    &quot;Python.Equation_Solver.executor&quot;: &quot;Run&quot;,
+-+    &quot;Python.SecantMethod.executor&quot;: &quot;Run&quot;,
+-+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+-+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+-+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+-+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+-+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
+-+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+-+  }
+-+}</component>
+-+  <component name="RunManager">
+-+    <configuration name="Equation_Solver" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+-+      <module name="NumMet" />
+-+      <option name="ENV_FILES" value="" />
+-+      <option name="INTERPRETER_OPTIONS" value="" />
+-+      <option name="PARENT_ENVS" value="true" />
+-+      <envs>
+-+        <env name="PYTHONUNBUFFERED" value="1" />
+-+      </envs>
+-+      <option name="SDK_HOME" value="" />
+-+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Model" />
+-+      <option name="IS_MODULE_SDK" value="true" />
+-+      <option name="ADD_CONTENT_ROOTS" value="true" />
+-+      <option name="ADD_SOURCE_ROOTS" value="true" />
+-+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+-+      <option name="SCRIPT_NAME" value="C:\Users\ulita\PycharmProjects\NumMet\Model\Equation_Solver.py" />
+-+      <option name="PARAMETERS" value="" />
+-+      <option name="SHOW_COMMAND_LINE" value="false" />
+-+      <option name="EMULATE_TERMINAL" value="false" />
+-+      <option name="MODULE_MODE" value="false" />
+-+      <option name="REDIRECT_INPUT" value="false" />
+-+      <option name="INPUT_FILE" value="" />
+-+      <method v="2" />
+-+    </configuration>
+-+    <recent_temporary>
+-+      <list>
+-+        <item itemvalue="Python.Equation_Solver" />
+-+      </list>
+-+    </recent_temporary>
+-+  </component>
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+-@@ -67,8 +100,45 @@
+-       <updated>1709816224229</updated>
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+--      <workItem from="1709832173995" duration="846000" />
+-+      <workItem from="1709832173995" duration="5215000" />
+-+      <workItem from="1709869915302" duration="4124000" />
+-+      <workItem from="1709911192969" duration="4878000" />
+-+      <workItem from="1709952148873" duration="5284000" />
+-+      <workItem from="1710108026550" duration="4450000" />
+-+    </task>
+-+    <task id="LOCAL-00001" summary="Structure">
+-+      <option name="closed" value="true" />
+-+      <created>1709833133501</created>
+-+      <option name="number" value="00001" />
+-+      <option name="presentableId" value="LOCAL-00001" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1709833133501</updated>
+-+    </task>
+-+    <task id="LOCAL-00002" summary="Structure2">
+-+      <option name="closed" value="true" />
+-+      <created>1709833343231</created>
+-+      <option name="number" value="00002" />
+-+      <option name="presentableId" value="LOCAL-00002" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1709833343231</updated>
+-+    </task>
+-+    <task id="LOCAL-00003" summary="Equation Solver">
+-+      <option name="closed" value="true" />
+-+      <created>1709952481217</created>
+-+      <option name="number" value="00003" />
+-+      <option name="presentableId" value="LOCAL-00003" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1709952481217</updated>
+-     </task>
+-+    <task id="LOCAL-00004" summary="Function grapher in equation solver">
+-+      <option name="closed" value="true" />
+-+      <created>1709956101632</created>
+-+      <option name="number" value="00004" />
+-+      <option name="presentableId" value="LOCAL-00004" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1709956101632</updated>
+-+    </task>
+-+    <option name="localTasksCounter" value="5" />
+-     <servers />
+-   </component>
+-   <component name="TypeScriptGeneratedFilesManager">
+-@@ -87,8 +157,15 @@
+-   </component>
+-   <component name="VcsManagerConfiguration">
+-     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+-+    <MESSAGE value="Structure" />
+-+    <MESSAGE value="Structure2" />
+-+    <MESSAGE value="Equation Solver" />
+-+    <MESSAGE value="Function grapher in equation solver" />
+-+    <option name="LAST_COMMIT_MESSAGE" value="Function grapher in equation solver" />
+-   </component>
+-   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+--    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-+    <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1710116423252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709833461472" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-+    <SUITE FILE_PATH="coverage/NumMet$SecantMethod.coverage" NAME="SecantMethod Coverage Results" MODIFIED="1709918905622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-   </component>
+- </project>
+-\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33__Changes_.xml	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ /dev/null	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]" date="1710207282063" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 11/03/2024 19:33 [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p__m___Changes_1.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p__m___Changes_1.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p__m___Changes_1.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p__m___Changes_1.xml	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ /dev/null	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1" date="1710216901918" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_10_14_p_ m__[Changes]1/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 11/03/2024 10:14 p. m. [Changes]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_11_03_2024_19_33_[Changes]/shelved.patch	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ /dev/null	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
+@@ -1,365 +0,0 @@
+-Index: Model/MainModel.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/MainModel.py b/Model/MainModel.py
+---- a/Model/MainModel.py	(revision 9b94ac2b1a812efbb21eccd4f25bd8fa5b979f74)
+-+++ b/Model/MainModel.py	(date 1709956590886)
+-@@ -1,0 +1,14 @@
+-+from sympy import symbols, sympify
+-+
+-+class MainModel:
+-+    def __init__(self, a, b, ep):
+-+        self.a = a
+-+        self.b = b
+-+        self.ep = ep
+-+
+-+    def eval(self, x, eq):
+-+        pass
+-+
+-+    def getXr(self):
+-+        self.xr = (self.a + self.b) / 2
+-+
+-Index: Model/test.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/test.py b/Model/test.py
+-new file mode 100644
+---- /dev/null	(date 1709956590920)
+-+++ b/Model/test.py	(date 1709956590920)
+-@@ -0,0 +1,19 @@
+-+import math
+-+
+-+# Function to evaluate user input
+-+def evaluate_function():
+-+    # Get user input for the function
+-+    user_function = input("Enter a mathematical function (e.g., sin(x), cos(x)): ")
+-+
+-+    # Get user input for the value at which to evaluate the function
+-+    value = float(input("Enter the value at which you want to evaluate the function: "))
+-+
+-+    try:
+-+        # Evaluate the function at the given value
+-+        result = eval(user_function.replace("x", str(value)))
+-+        print(f"The result of {user_function} at {value} is: {result}")
+-+    except Exception as e:
+-+        print("Error:", e)
+-+
+-+# Call the function
+-+evaluate_function()
+-\ No newline at end of file
+-Index: .idea/NumMet.iml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/.venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/NumMet.iml b/.idea/NumMet.iml
+---- a/.idea/NumMet.iml	(revision 9b94ac2b1a812efbb21eccd4f25bd8fa5b979f74)
+-+++ b/.idea/NumMet.iml	(date 1709956590903)
+-@@ -4,7 +4,7 @@
+-     <content url="file://$MODULE_DIR$">
+-       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+-     </content>
+--    <orderEntry type="inheritedJdk" />
+-+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
+-     <orderEntry type="sourceFolder" forTests="false" />
+-   </component>
+- </module>
+-\ No newline at end of file
+-Index: View/Gauss.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/View/Gauss.py b/View/Gauss.py
+-new file mode 100644
+---- /dev/null	(date 1710207168559)
+-+++ b/View/Gauss.py	(date 1710207168559)
+-@@ -0,0 +1,139 @@
+-+from PySide6 import QtWidgets
+-+from PySide6.QtCore import Qt
+-+import sys
+-+
+-+from PySide6.QtWidgets import QStackedLayout, QWidget, QPushButton
+-+
+-+
+-+class MainWindow(QtWidgets.QMainWindow):
+-+    def __init__(self):
+-+        super().__init__()
+-+        self.setupUi()
+-+
+-+        central_widget = QWidget()
+-+        central_widget.setContentsMargins(0, 0, 0, 0)
+-+        central_widget.setLayout(self.stacked_layout)
+-+        self.setCentralWidget(central_widget)
+-+
+-+    def setupUi(self):
+-+        self.stacked_layout = QStackedLayout()
+-+        view = QWidget()
+-+        body = QtWidgets.QVBoxLayout()
+-+
+-+        body.addWidget(self.buildTop())
+-+        body.addWidget(self.buildNo())
+-+        body.addWidget(self.buildMain())
+-+        view.setLayout(body)
+-+        self.stacked_layout.addWidget(view)
+-+
+-+    def buildTop(self):
+-+        title_label = QtWidgets.QLabel()
+-+        title_label.setText('Gauss-Jordan')
+-+        title_label.setObjectName('title_label')
+-+
+-+        layout = QtWidgets.QHBoxLayout()
+-+        layout.addWidget(title_label, alignment=Qt.AlignCenter)
+-+
+-+        container = QWidget()
+-+        container.setObjectName('container_top')
+-+        container.setLayout(layout)
+-+        return container
+-+
+-+    def buildNo(self):
+-+        label_novar = QtWidgets.QLabel('Number of variables')
+-+        label_noeq = QtWidgets.QLabel('Number of equations')
+-+
+-+        spin_novar = QtWidgets.QSpinBox()
+-+        spin_novar.setRange(2, 50)
+-+        spin_noeq = QtWidgets.QSpinBox()
+-+        spin_noeq.setRange(2, 50)
+-+
+-+        vbox_novar = QtWidgets.QVBoxLayout()
+-+        vbox_novar.addWidget(label_novar)
+-+        vbox_novar.addWidget(spin_novar)
+-+        container_novar = QtWidgets.QWidget()
+-+        container_novar.setLayout(vbox_novar)
+-+
+-+        vbox_noeq = QtWidgets.QVBoxLayout()
+-+        vbox_noeq.addWidget(label_noeq)
+-+        vbox_noeq.addWidget(spin_noeq)
+-+        container_noeq = QtWidgets.QWidget()
+-+        container_noeq.setLayout(vbox_noeq)
+-+
+-+        layout = QtWidgets.QHBoxLayout()
+-+        layout.addWidget(container_novar)
+-+        layout.addWidget(container_noeq)
+-+
+-+        container = QWidget()
+-+        container.setObjectName('container_center')
+-+        container.setLayout(layout)
+-+        return container
+-+
+-+    def buildMain(self):
+-+        num_rows = 5
+-+        num_cols = 3
+-+
+-+        layout = QtWidgets.QGridLayout()
+-+        layout.setHorizontalSpacing(2)
+-+        layout.setVerticalSpacing(2)
+-+
+-+        for row in range(num_rows):
+-+            for col in range(num_cols):
+-+                label = QtWidgets.QLabel(f"x {col + 1}")
+-+                label.setStyleSheet("font-size: 15px; font-weight: bold")
+-+                spin_box = QtWidgets.QSpinBox()
+-+                spin_box.setMinimum(-1000)
+-+                spin_box.setFixedSize(60, 24)
+-+
+-+                container = QtWidgets.QWidget()
+-+                hbox = QtWidgets.QHBoxLayout()
+-+
+-+                # Add label and spin box to the grid layout
+-+                hbox.addWidget(spin_box)
+-+                hbox.addWidget(label)
+-+                container.setLayout(hbox)
+-+
+-+                layout.addWidget(container, row, col * 2)
+-+
+-+            equals_label = QtWidgets.QLabel("=")
+-+            equals_label.setStyleSheet("font-size: 15px; font-weight: bold")
+-+            extra_spin_box = QtWidgets.QSpinBox()
+-+            extra_spin_box.setFixedSize(60, 24)
+-+            layout.addWidget(equals_label, row, num_cols * 2)
+-+            layout.addWidget(extra_spin_box, row, num_cols * 2 + 1)
+-+
+-+        container = QWidget()
+-+        container.setObjectName('container_main')
+-+        container.setLayout(layout)
+-+        return container
+-+
+-+    def buildMatrixOptions(self):
+-+        pass
+-+
+-+    def buildResults(self):
+-+        pass
+-+
+-+    def buildResultsOptions(self):
+-+        pass
+-+
+-+def setAppStyles():
+-+    app.setStyleSheet("* {"
+-+                      "font: 10px 'Helvetica'; } "
+-+                      "#title_label { font-size: 25px; font-weight: 700; }"
+-+                      "QPushButton { "
+-+                      "background-color: black; "
+-+                      "border-radius: 10px;"
+-+                      "color: white;"
+-+                      "font-weight: 700; }"
+-+                      "#container_top { "
+-+                      "background-color: #DDDDDD; }" )
+-+
+-+def main():
+-+    setAppStyles()
+-+    window = MainWindow()
+-+    window.show()
+-+    sys.exit(app.exec())
+-+
+-+if __name__ == '__main__':
+-+    app = QtWidgets.QApplication(sys.argv)
+-+    main()
+-\ No newline at end of file
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/Modules/main.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/View/main.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision 9b94ac2b1a812efbb21eccd4f25bd8fa5b979f74)
+-+++ b/.idea/workspace.xml	(date 1710207064529)
+-@@ -5,8 +5,14 @@
+-   </component>
+-   <component name="ChangeListManager">
+-     <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="">
+-+      <change afterPath="$PROJECT_DIR$/Model/GaussJordan.py" afterDir="false" />
+-+      <change afterPath="$PROJECT_DIR$/Model/test.py" afterDir="false" />
+-+      <change afterPath="$PROJECT_DIR$/View/Gauss.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/NumMet.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/NumMet.iml" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/Modules/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/main.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Model/Equation_Solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Equation_Solver.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/Model/MainModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/MainModel.py" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+-@@ -17,6 +23,7 @@
+-     <option name="RECENT_TEMPLATES">
+-       <list>
+-         <option value="Python Script" />
+-+        <option value="CSS File" />
+-       </list>
+-     </option>
+-   </component>
+-@@ -37,10 +44,15 @@
+-   <component name="PropertiesComponent"><![CDATA[{
+-   "keyToString": {
+-     "ASKED_ADD_EXTERNAL_FILES": "true",
+-+    "Python.Equation_Solver.executor": "Run",
+-+    "Python.Gauss.executor": "Run",
+-+    "Python.MainModel.executor": "Run",
+-     "Python.main.executor": "Run",
+-+    "Python.test.executor": "Run",
+-     "RunOnceActivity.OpenProjectViewOnStart": "true",
+-     "RunOnceActivity.ShowReadmeOnStart": "true",
+-     "git-widget-placeholder": "master",
+-+    "list.type.of.created.stylesheet": "CSS",
+-     "node.js.detected.package.eslint": "true",
+-     "node.js.detected.package.tslint": "true",
+-     "node.js.selected.package.eslint": "(autodetect)",
+-@@ -53,7 +65,7 @@
+-   <component name="SharedIndexes">
+-     <attachedChunks>
+-       <set>
+--        <option value="bundled-python-sdk-5a2391486177-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13763.11" />
+-+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+-       </set>
+-     </attachedChunks>
+-   </component>
+-@@ -68,6 +80,10 @@
+-       <workItem from="1709816235551" duration="1022000" />
+-       <workItem from="1709831463985" duration="23000" />
+-       <workItem from="1709832173995" duration="846000" />
+-+      <workItem from="1709950957972" duration="771000" />
+-+      <workItem from="1709955108830" duration="744000" />
+-+      <workItem from="1709956558636" duration="277000" />
+-+      <workItem from="1710189093745" duration="11333000" />
+-     </task>
+-     <servers />
+-   </component>
+-@@ -89,6 +105,10 @@
+-     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+-   </component>
+-   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+-+    <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1709837124967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1709956811744" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+-+    <SUITE FILE_PATH="coverage/NumMet$Gauss.coverage" NAME="Gauss Coverage Results" MODIFIED="1710207063138" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-     <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+-   </component>
+- </project>
+-\ No newline at end of file
+-Index: Model/Equation_Solver.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>import sympy\r\nfrom sympy import Symbol\r\nimport sympy as sym\r\nclass Function:\r\n    def __init__(self, name, expression):#Defines the function\r\n        self.name = name\r\n        self.expression = sym.parse_expr(expression)\r\n        self.x = Symbol(\"x\")\r\n        #self.error = error # %\r\n\r\n    def evaluate(self, x):\r\n        return self.expression.subs(sym.Symbol('x'), x)\r\n\r\n    def plot(self):# Graph the Function\r\n        sympy.plot(self.expression, title=f\"Gráfica de {self.name}\")\r\nclass Application_Test:\r\n    def __init__(self):\r\n        self.function = None\r\n        self.value_x = None\r\n\r\n    def init(self):\r\n        #Enter the function and the initial value\r\n        name_function = input(\"Introduzca el nombre de la función: \")\r\n        expression_function = input(\"Introduzca la expresión de la función: \")\r\n        self.function = Function(name_function, expression_function)#Stores object class Function\r\n        self.value_x = float(input(\"Introduzca el valor de x: \"))\r\n\r\n    def show_result(self):\r\n        result = self.function.evaluate(self.value_x)\r\n        # Simplifica la expresión\r\n        result = sympy.simplify(result)\r\n        # Si la simplificación no elimina el logaritmo, convierte a número decimal\r\n        if isinstance(result, sympy.Expr):\r\n            result = sympy.N(result, 7)#Returns 6 decimal places after point\r\n        print(f\"El resultado de f({self.value_x}) es {result}\")\r\n\r\napp = Application_Test()\r\napp.init()\r\napp.function.plot()\r\napp.show_result()\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/Model/Equation_Solver.py b/Model/Equation_Solver.py
+---- a/Model/Equation_Solver.py	(revision 9b94ac2b1a812efbb21eccd4f25bd8fa5b979f74)
+-+++ b/Model/Equation_Solver.py	(date 1709956642477)
+-@@ -1,18 +1,19 @@
+-+import numpy as np
+-+import scipy as sp
+- import sympy
+--from sympy import Symbol
+-+from sympy import log
+- import sympy as sym
+-+
+- class Function:
+-     def __init__(self, name, expression):#Defines the function
+-         self.name = name
+-         self.expression = sym.parse_expr(expression)
+--        self.x = Symbol("x")
+-         #self.error = error # %
+- 
+-     def evaluate(self, x):
+-+        sympy.plot(self.expression) #Function grapher
+-         return self.expression.subs(sym.Symbol('x'), x)
+- 
+--    def plot(self):# Graph the Function
+--        sympy.plot(self.expression, title=f"Gráfica de {self.name}")
+- class Application_Test:
+-     def __init__(self):
+-         self.function = None
+-@@ -36,5 +37,4 @@
+- 
+- app = Application_Test()
+- app.init()
+--app.function.plot()
+- app.show_result()
+-Index: .idea/misc.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/misc.xml b/.idea/misc.xml
+---- a/.idea/misc.xml	(revision 9b94ac2b1a812efbb21eccd4f25bd8fa5b979f74)
+-+++ b/.idea/misc.xml	(date 1709956590950)
+-@@ -3,5 +3,5 @@
+-   <component name="Black">
+-     <option name="sdkName" value="Python 3.11 (NumMet)" />
+-   </component>
+--  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
+-+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11" project-jdk-type="Python SDK" />
+- </project>
+-\ No newline at end of file
+-diff --git a/Model/GaussJordan.py b/Model/GaussJordan.py
+-new file mode 100644
+Index: Controller/Bisectioncontroller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Controller/Bisectioncontroller.py b/Controller/Bisectioncontroller.py
+new file mode 100644
+--- /dev/null	(date 1710863276839)
++++ b/Controller/Bisectioncontroller.py	(date 1710863276839)
+@@ -0,0 +1,231 @@
++import sys
++from PySide6 import QtWidgets
++from PySide6.QtGui import QPixmap
++from PySide6.QtCore import Qt
++from PySide6.QtWidgets import QLabel, QDialog, QWidget, QVBoxLayout, QPushButton, QScrollArea
++
++from Model.Bisection_Method import Bisection_Method
++from View.BiseccionView import MainWindow
++from Model.Equation_Solver import Function
++import sympy as sp
++
++class BisectionController:
++    def __init__(self, app):
++        self.app = app
++        self.ventana = MainWindow()
++        self.ventana.show()
++
++        # Conectar eventos de la interfaz gráfica a la lógica
++        self.ventana.button_calcular.clicked.connect(self.calcular)
++        self.ventana.button_graficar.clicked.connect(self.graficar)
++        self.ventana.button_volverMenu.clicked.connect(self.return_to_menu)
++        self.ventana.button_a.clicked.connect(self.help)
++
++        # Crear una instancia del solucionador de la ecuación
++        self.solver = Bisection_Method()
++
++    def calcular(self):
++        try:
++            expression_function = self.ventana.edit_ecuacion.text()
++            error = float(self.ventana.edit_error.text())
++            xi_minus_1 = float(self.ventana.edit_a.text())
++            xi = float(self.ventana.edit_b.text())
++
++            # Verificar si la expresión es una función válida
++            if not self.is_valid_function(expression_function):
++                raise ValueError("La expresión ingresada no es una función válida.")
++
++            # Limpiar la tabla antes de agregar nuevos resultados
++            self.ventana.tabla_resultados.clearContents()
++            self.ventana.tabla_resultados.setRowCount(0)
++
++            # Inicializar el solucionador con los valores ingresados
++            self.solver.init(expression_function, error, xi_minus_1, xi)
++
++            # Resolver la ecuación y obtener los resultados
++            solver_results, error_message = self.solver.solve()
++
++            # Agregar los resultados a la tabla
++            for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1,f_xi_plus_1, error) in enumerate(solver_results):
++                self.ventana.tabla_resultados.insertRow(i)
++                self.ventana.tabla_resultados.setItem(i, 0, QtWidgets.QTableWidgetItem(str(xi_minus_1)))
++                self.ventana.tabla_resultados.setItem(i, 1, QtWidgets.QTableWidgetItem(str(xi)))
++                self.ventana.tabla_resultados.setItem(i, 2, QtWidgets.QTableWidgetItem(str(f_xi_minus_1)))
++                self.ventana.tabla_resultados.setItem(i, 3, QtWidgets.QTableWidgetItem(str(f_xi)))
++                self.ventana.tabla_resultados.setItem(i, 4, QtWidgets.QTableWidgetItem(str(xi_plus_1)))
++                self.ventana.tabla_resultados.setItem(i, 4, QtWidgets.QTableWidgetItem(str(f_xi_plus_1)))
++                self.ventana.tabla_resultados.setItem(i, 5, QtWidgets.QTableWidgetItem(str(error)))
++
++            # Mostrar el último resultado en el campo de texto
++            if solver_results:
++                self.ventana.edit_resultado.setText(str(solver_results[-1][4]))
++            else:
++                # No se pudieron calcular resultados, por lo que no hay nada que mostrar
++                self.ventana.edit_resultado.setStyleSheet("color: red;")  # Color rojo
++                self.ventana.edit_resultado.setText("No se pudo calcular debido a una entrada inválida.")
++
++            if (error_message != None):
++                if error_message.startswith("Posible divergencia") or error_message.startswith(
++                        "La función es casi constante" or error_message.startswith("El cálculo de la siguiente")):
++                    # Manejo específico para la excepción de posible divergencia
++                    self.ventana.show_error_message(
++                        error_message + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
++                else:
++                    # Otros errores
++                    self.ventana.show_error_message(
++                        "Error: No es posible resolver la ecuación debido a un problema identificado." + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
++        except ValueError as e:
++            # Capturar la excepción de división por cero en la función y mostrar el mensaje de error
++            self.ventana.show_error_message(str(e))
++
++    def is_valid_function(self, expression):
++        # Intentar crear una expresión SymPy con la cadena de entrada
++        expr = sp.sympify(expression)
++        # Verificar si la expresión contiene al menos una variable
++        return bool(expr.free_symbols)
++
++    def graficar(self):
++        # Método para graficar la función
++        expression_function = self.ventana.edit_ecuacion.text()
++        function = Function(expression_function)
++
++        # Obtener la ruta de la imagen generada
++        ruta_imagen = function.plot()
++
++        # Crear una nueva ventana para mostrar la gráfica
++        ventana_grafica = QtWidgets.QMainWindow()
++        ventana_grafica.setWindowTitle("Gráfica de la función")
++
++        # Cargar la imagen y obtener sus dimensiones
++        pixmap = QPixmap(ruta_imagen)
++        ancho_imagen = pixmap.width()
++        alto_imagen = pixmap.height()
++
++        # Establecer el tamaño de la ventana según las dimensiones de la imagen
++        ventana_grafica.setFixedSize(ancho_imagen, alto_imagen)
++
++        # Crear un widget para mostrar la gráfica
++        widget_grafica = QtWidgets.QWidget()
++        layout_grafica = QtWidgets.QVBoxLayout()
++        widget_grafica.setLayout(layout_grafica)
++        ventana_grafica.setCentralWidget(widget_grafica)
++
++        # Mostrar la imagen en la nueva ventana
++        label_grafica = QtWidgets.QLabel()
++        label_grafica.setPixmap(pixmap)
++        layout_grafica.addWidget(label_grafica)
++
++        # Mostrar la nueva ventana
++        ventana_grafica.show()
++
++    def return_to_menu(self):
++        from MainController import MainController
++        self.main_controller = MainController()
++        self.main_controller.show_menu()
++        self.ventana.close()
++
++    def help(self):
++        help_dialog = QDialog()
++        help_dialog.setWindowTitle("Manual de Usuario Secante")
++        help_dialog.setFixedSize(650, 400)
++
++        scroll_area = QScrollArea()
++        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
++
++        content_widget = QWidget()
++        content_layout = QVBoxLayout()
++
++        layout = QVBoxLayout()
++
++        # Título
++        title_label = QLabel("Manual de Usuario Secante")
++        title_label.setStyleSheet("font-family: Arial, sans-serif; font-size:14pt;;")
++        content_layout.addWidget(title_label)
++
++        # Instrucciones
++        instructions_label = QLabel(
++            "Verifica inicialmente tu función y valores iniciales (que se llegue a una raíz en el intervalo)\n"
++            "para evitar que aparezcan errores. Al final hay un ejemplo de cómo escribir una función.\n\n"
++
++            "OPERACIONES ALGEBRAICAS\n\n"
++
++            "-Exponentes: x^2 se escibe como x**2\n"
++            "-Multiplicacion: x*2\n"
++            "-Division: x/2\n"
++            "-Suma: x + 2\n"
++            "-Resta: x - 2\n"
++            "-Raíz Cuadrada: x**(1/2) o con sqrt(x)\n"
++            "-Raíz Cúbica: x**(1/3) o con cbrt(x)\n"
++            "-Raíz de cuanquier radical: x**(1/n)\n"
++            "-Numero e: e^x -> exp(x)\n"
++            "-Valor Absoluto: Abs(x)\n"
++            "-Factorial: factorial(x)\n\n"
++            "FUNCIONES LOGARÍTMICAS\n\n"
++            "-Logaritmo: log(x,base)\n"
++            "-Logaritmo natural: log(x)\n\n"
++
++            "FUNCIONES TRIGONOMÉTRICAS\n\n"
++
++            "-Seno: sin(x)\n"
++            "-Coseno: cos(x)\n"
++            "-Tangente: tan(x)\n"
++            "-Arcoseno: asin(x)\n"
++            "-Arcocoseno: acos(x)\n"
++            "-Arcotangente: atan(x)\n"
++            "-Cosecante: csc(x)\n"
++            "-Secante: sec(x)\n"
++            "-Cotangente: cot(x)\n"
++            "-Arcocosecante: acsc(x)\n"
++            "-Arcosecante: asec(x)\n"
++            "-Arcocotangente: acot(x)\n\n"
++
++            "FUNCIONES HIPERBOLÍCAS\n\n"
++
++            "-Seno hiperbólico: sinh(x)\n"
++            "-Coseno hiperbólico: cosh(x)\n"
++            "-Tangente hiperbólica: tanh(x)\n"
++            "-Arcoseno hiperbólico: asinh(x)\n"
++            "-Arcocoseno hiperbólico: acosh(x)\n"
++            "-Arcotangente hiperbólica: atanh(x)\n\n"
++
++            "FUNCIONES ESPECIALES\n\n"
++
++            "-Función Gamma: gamma(x)\n"
++            "-Función Beta: beta(x,y)\n\n"
++
++            "Nota: Se respeta la prioridad por paréntesis\n\n"
++
++            "EJEMPLO.\n\n"
++
++            "La ecuación x^4 - 2x^3 - 12x^2 + 16x - 40 se esribe como:\n"
++            "\tx**4 - 2*x**3 - 12*x**2 + 16*x - 40\n"
++        )
++        instructions_label.setStyleSheet("font-family: Arial, sans-serif; font-size:11pt;")
++        content_layout.addWidget(instructions_label)
++
++        # Botón de regresar
++        return_button = QPushButton("Return")
++        return_button.setStyleSheet(
++            "background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;")
++        return_button.clicked.connect(help_dialog.close)
++        content_layout.addWidget(return_button)
++        content_widget.setLayout(content_layout)
++        scroll_area.setWidget(content_widget)
++        layout.addWidget(scroll_area)
++
++        help_dialog.setLayout(layout)
++        help_dialog.exec()
++
++    def move_window_to_center(self):
++        # Mover la ventana al centro de la pantalla
++        screen_geometry = QtWidgets.QApplication.primaryScreen().geometry()
++        x = (screen_geometry.width() - self.ventana.width()) / 2
++        y = (screen_geometry.height() - self.ventana.height()) / 2
++        self.ventana.move(x, y)
++
++    def run(self):
++        sys.exit(self.app.exec_())
++
++if __name__ == '__main__':
++    controller = BisectionController()
++    controller.run()
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"Black\">\r\n    <option name=\"sdkName\" value=\"Python 3.11 (NumMet)\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.11 (NumMet)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 54bd03da95e0b604e2235988b86f5facb8de2ced)
++++ b/.idea/misc.xml	(date 1710796971820)
+@@ -3,5 +3,5 @@
+   <component name="Black">
+     <option name="sdkName" value="Python 3.11 (NumMet)" />
+   </component>
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (NumMet)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (NumMet)" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
