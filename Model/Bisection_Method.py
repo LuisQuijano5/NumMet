@@ -23,6 +23,7 @@ class Bisection_Method():
     def iteration(self,expression,error,a,b):
         results = []
         error_message = None
+        self.Xr=None
         self.expression = sym.sympify(expression)
         self.a =float(a)
         self.b =float(b)
@@ -45,7 +46,7 @@ class Bisection_Method():
                 self.flag = self.FXr * self.Fa
                 #print("a1="+str(self.a))
                 #here we save the a and b values in the table (before the next change)
-                results.append((self.a,self.b,self.Fa,self.Fb,self.Xr,self.FXr,self.calculatederror))
+                results.append((sym.N(self.a,7),sym.N(self.b),sym.N(self.Fa),sym.N(self.Fb),sym.N(self.Xr),sym.N(self.FXr),sym.N(self.calculatederror)))
                 #xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error
                     #a and b changes depending on flag value
                 if(self.flag>0):self.a=self.Xr
