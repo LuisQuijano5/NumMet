@@ -28,15 +28,10 @@ class Bisection_Method():
         self.a =float(a)
         self.b =float(b)
         self.aprovederror = float(error)
-        #self.aprovederror = 0.0  # window edit error
-        #self.calculatederror = 100.00
-        #self.flag = 1.00
-
         while( self.calculatederror>self.aprovederror and self.flag!=0.00):
             try:
                 #print(self.a)
                     #a and b evaluate
-                print("hey")
                 self.Fa=self.evaluateExpression(self.a)
                 self.Fb=self.evaluateExpression(self.b)
                     #calculating xr and evaluate
@@ -57,17 +52,16 @@ class Bisection_Method():
                 if(self.flag>0):self.a=self.Xr
                 else:self.b=self.Xr
 
-            except Exception as e:
-               error_message = str(e)
+            except ValueError as e:
+                error_message = str(e)
 
-        #print(self.expression)
-        #print("b=" + str(self.b))
-        #print("a=" + str(self.a))
-        #print("fa=" + str(self.Fa))
-        #print("fb=" + str(self.Fb))
-        #print("xr=" + str(self.Xr))
-        #print("fxr=" + str(self.FXr))
-        #print("flag=" + str(self.flag))
+        print("b=" + str(self.b))
+        print("a=" + str(self.a))
+        print("fa=" + str(self.Fa))
+        print("fb=" + str(self.Fb))
+        print("xr=" + str(self.Xr))
+        print("fxr=" + str(self.FXr))
+        print("flag=" + str(self.flag))
 
             #here we save the rest of the variables on the table (the loop starts again)
         return results, error_message

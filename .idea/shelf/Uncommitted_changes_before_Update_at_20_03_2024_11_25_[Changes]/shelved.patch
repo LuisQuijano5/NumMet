@@ -1,0 +1,258 @@
+Index: View/BiseccionView.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\nfrom PySide6 import QtCore\r\nimport os\r\n\r\n# Obtener la ruta del directorio actual del script\r\ncurrent_dir = os.path.dirname(os.path.abspath(__file__))\r\nstylesheet_path = os.path.join(current_dir, 'styleSheet.css')\r\n\r\n#with open('styleSheet.css', 'r') as f:\r\n   # stylesheet = f.read()\r\nwith open(stylesheet_path, 'r') as f:\r\n    stylesheet = f.read()\r\nclass MainWindow(QtWidgets.QMainWindow):\r\n\r\n    def __init__(self):\r\n        super().__init__()\r\n        self.setWindowTitle('Método Bisección')\r\n        self.setGeometry(100, 100, 800, 600)\r\n\r\n        # Crear layout principal\r\n        layout = QtWidgets.QVBoxLayout()\r\n\r\n        # Label de Metodo\r\n        label_opcion = QtWidgets.QLabel(\"Metodo Biseccion\")\r\n        label_opcion.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        layout.addWidget(label_opcion)\r\n\r\n\r\n        # Layout para ecuacion y boton de Ayuda\r\n        layout_ecuacion = QtWidgets.QHBoxLayout()\r\n        # Textfield para ecuacion\r\n        label_funicon = QtWidgets.QLabel(\"Funcion\")\r\n        layout_ecuacion.addWidget(label_funicon)\r\n        self.edit_ecuacion = QtWidgets.QLineEdit()\r\n        self.edit_ecuacion.setPlaceholderText(\"De click en el boton de Ayuda (Derecha) para saber como ingresar la funcion\")\r\n        layout_ecuacion.addWidget(self.edit_ecuacion)\r\n        # Boton Ayuda\r\n        self.button_a = QtWidgets.QPushButton(\"?\")\r\n        layout_ecuacion.addWidget(self.button_a)\r\n\r\n        layout.addLayout(layout_ecuacion)\r\n\r\n        # Layout para valores iniciales\r\n        layout_valores = QtWidgets.QHBoxLayout()\r\n        # Label \"Valores Iniciales\"\r\n        label_valores_iniciales = QtWidgets.QLabel('Valores Iniciales')\r\n        layout_valores.addWidget(label_valores_iniciales)\r\n        # Textfield para a\r\n        self.edit_a = QtWidgets.QLineEdit()\r\n        self.edit_a.setPlaceholderText(\"a\")\r\n        layout_valores.addWidget(self.edit_a)\r\n        # Textfield para b\r\n        self.edit_b = QtWidgets.QLineEdit()\r\n        self.edit_b.setPlaceholderText(\"b\")\r\n        layout_valores.addWidget(self.edit_b)\r\n\r\n        layout.addLayout(layout_valores)\r\n\r\n        # Layout para Error\r\n        layout_error = QtWidgets.QHBoxLayout()\r\n        # Label \"Error\"\r\n        label_error = QtWidgets.QLabel(\"Error\")\r\n        layout_error.addWidget(label_error)\r\n        # Textfield para error\r\n        self.edit_error = QtWidgets.QLineEdit()\r\n        self.edit_error.setPlaceholderText('Tolerancia de error')\r\n        layout_error.addWidget(self.edit_error)\r\n\r\n        layout.addLayout(layout_error)\r\n\r\n        # Boton Calcular\r\n        self.button_calcular = QtWidgets.QPushButton('Calcular')\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(self.button_calcular)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n        \r\n        layout.addLayout(button_layout)\r\n\r\n\r\n        # Layout para Resultado\r\n        layout_resultado = QtWidgets.QHBoxLayout()\r\n        # Label \"Resultado x=\"\r\n        label_resultado = QtWidgets.QLabel('Resultado x=')\r\n        layout_resultado.addWidget(label_resultado)\r\n        # Textfield para resultado\r\n        self.edit_resultado = QtWidgets.QLineEdit()\r\n        self.edit_resultado.setReadOnly(True)\r\n        layout_resultado.addWidget(self.edit_resultado)\r\n\r\n        layout.addLayout(layout_resultado)\r\n\r\n        # Tabla de Resultados\r\n        # Crear tabla\r\n        self.tabla_resultados = QtWidgets.QTableWidget()\r\n        self.tabla_resultados.setColumnCount(7)\r\n        self.tabla_resultados.setHorizontalHeaderLabels([\"a\", \"b\", \"f(a)\", \"f(b)\", \"X_r\", \"f(X_r)\", \"Error\"])\r\n\r\n\r\n        layout.addWidget(self.tabla_resultados)\r\n\r\n        # Botón \"Continuar\"\r\n        self.button_graficar = QtWidgets.QPushButton(\"Graficar\")\r\n        self.button_volverMenu = QtWidgets.QPushButton(\"Menu\")\r\n        # Layout para botones volver al Menu y Graficar\r\n        button_layout = QtWidgets.QHBoxLayout()\r\n        button_layout.addWidget(self.button_volverMenu)\r\n        button_layout.addWidget(self.button_graficar)\r\n        button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)\r\n\r\n        layout.addLayout(button_layout)\r\n\r\n        # Widget central\r\n        central_widget = QtWidgets.QWidget()\r\n        central_widget.setLayout(layout)\r\n        self.setCentralWidget(central_widget)\r\n\r\nif __name__ == \"__main__\":\r\n    app = QtWidgets.QApplication(sys.argv)\r\n    #app.setStyleSheet(stylesheet)\r\n    ventana = MainWindow()\r\n    ventana.show()\r\n    sys.exit(app.exec())\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/View/BiseccionView.py b/View/BiseccionView.py
+--- a/View/BiseccionView.py	(revision ae62683caa8684f65354f4c19e7153885214d65f)
++++ b/View/BiseccionView.py	(date 1710954965679)
+@@ -115,6 +115,9 @@
+         central_widget.setLayout(layout)
+         self.setCentralWidget(central_widget)
+ 
++    def show_error_message(self, error_message):
++        QtWidgets.QMessageBox.critical(self, "Error", error_message)
++
+ if __name__ == "__main__":
+     app = QtWidgets.QApplication(sys.argv)
+     #app.setStyleSheet(stylesheet)
+Index: Model/Bisection_Method.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sympy as sym\r\n\r\n\r\n\r\nclass Bisection_Method():\r\n    def __init__(self):\r\n        #self.function = Function()\r\n        self.expression = None\r\n        self.a=None#float()\r\n        self.Fa=None\r\n        self.b=None#float()\r\n        self.Fb=None\r\n        self.Xr=None\r\n        self.Xrminus1=None\r\n        self.FXr=None\r\n        self.aprovederror=None#window edit error\r\n        self.calculatederror=100.00\r\n        self.flag=1.00\r\n\r\n    def evaluateExpression(self,x):\r\n        return self.expression.subs(sym.Symbol('x'), x)\r\n\r\n    def iteration(self,expression,error,a,b):\r\n        results = []\r\n        error_message = None\r\n        self.Xr=None\r\n        self.expression = sym.sympify(expression)\r\n        self.a =float(a)\r\n        self.b =float(b)\r\n        self.aprovederror = float(error)\r\n        while( self.calculatederror>self.aprovederror and self.flag!=0.00):\r\n            try:\r\n                #print(self.a)\r\n                    #a and b evaluate\r\n                self.Fa=self.evaluateExpression(self.a)\r\n                self.Fb=self.evaluateExpression(self.b)\r\n                    #calculating xr and evaluate\r\n                self.Xr=(self.a+self.b)/2\r\n                self.FXr=self.evaluateExpression(self.Xr)\r\n                #error frame calculus\r\n                if(self.Xrminus1!=None):\r\n                    self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100\r\n                else:self.calculatederror=100.00\r\n\r\n                self.Xrminus1 = self.Xr\r\n                self.flag = self.FXr * self.Fa\r\n                #print(\"a1=\"+str(self.a))\r\n                #here we save the a and b values in the table (before the next change)\r\n                results.append((sym.N(self.a,7),sym.N(self.b),sym.N(self.Fa),sym.N(self.Fb),sym.N(self.Xr),sym.N(self.FXr),sym.N(self.calculatederror)))\r\n                #xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error\r\n                    #a and b changes depending on flag value\r\n                if(self.flag>0):self.a=self.Xr\r\n                else:self.b=self.Xr\r\n\r\n            except ValueError as e:\r\n                error_message = str(e)\r\n\r\n        print(\"b=\" + str(self.b))\r\n        print(\"a=\" + str(self.a))\r\n        print(\"fa=\" + str(self.Fa))\r\n        print(\"fb=\" + str(self.Fb))\r\n        print(\"xr=\" + str(self.Xr))\r\n        print(\"fxr=\" + str(self.FXr))\r\n        print(\"flag=\" + str(self.flag))\r\n\r\n            #here we save the rest of the variables on the table (the loop starts again)\r\n        return results, error_message\r\n\r\n\r\n\r\n#some testsresult = sympy.N(result, 7)\r\n#test=Bisection_Method()\r\n#test.iteration()\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Model/Bisection_Method.py b/Model/Bisection_Method.py
+--- a/Model/Bisection_Method.py	(revision ae62683caa8684f65354f4c19e7153885214d65f)
++++ b/Model/Bisection_Method.py	(date 1710953017104)
+@@ -23,6 +23,9 @@
+     def iteration(self,expression,error,a,b):
+         results = []
+         error_message = None
++        self.Xrminus1=None
++        self.calculatederror = 100.00
++        self.flag = 1.00
+         self.Xr=None
+         self.expression = sym.sympify(expression)
+         self.a =float(a)
+@@ -37,20 +40,27 @@
+                     #calculating xr and evaluate
+                 self.Xr=(self.a+self.b)/2
+                 self.FXr=self.evaluateExpression(self.Xr)
+-                #error frame calculus
+-                if(self.Xrminus1!=None):
+-                    self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100
+-                else:self.calculatederror=100.00
+ 
+-                self.Xrminus1 = self.Xr
+                 self.flag = self.FXr * self.Fa
+-                #print("a1="+str(self.a))
+-                #here we save the a and b values in the table (before the next change)
+-                results.append((sym.N(self.a,7),sym.N(self.b),sym.N(self.Fa),sym.N(self.Fb),sym.N(self.Xr),sym.N(self.FXr),sym.N(self.calculatederror)))
+-                #xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error
+-                    #a and b changes depending on flag value
+-                if(self.flag>0):self.a=self.Xr
+-                else:self.b=self.Xr
++                # print("a1="+str(self.a))
++                # here we save the a and b values in the table (before the next change)
++                results.append((sym.N(self.a, 7), sym.N(self.b), sym.N(self.Fa), sym.N(self.Fb), sym.N(self.Xr),
++                                sym.N(self.FXr), sym.N(self.calculatederror)))
++                # xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1, error
++                # a and b changes depending on flag value
++                if (self.flag > 0):
++                    self.a = self.Xr
++                else:
++                    self.b = self.Xr
++
++                #error frame calculus
++                if(self.Xrminus1!=None):
++                    print("xr:" + str(self.Xr) + " xrminus1:" + str(self.Xrminus1))
++                    self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100
++                else:self.calculatederror=100.00
++
++                self.Xrminus1 = self.Xr
++
+ 
+             except ValueError as e:
+                 error_message = str(e)
+@@ -62,6 +72,7 @@
+         print("xr=" + str(self.Xr))
+         print("fxr=" + str(self.FXr))
+         print("flag=" + str(self.flag))
++        print("xrminus1=" + str(self.Xrminus1))
+ 
+             #here we save the rest of the variables on the table (the loop starts again)
+         return results, error_message
+Index: Controller/Bisectioncontroller.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import sys\r\nfrom PySide6 import QtWidgets\r\nfrom PySide6.QtGui import QPixmap\r\nfrom PySide6.QtCore import Qt\r\nfrom PySide6.QtWidgets import QLabel, QDialog, QWidget, QVBoxLayout, QPushButton, QScrollArea\r\n\r\nfrom Model.Bisection_Method import Bisection_Method\r\nfrom View.BiseccionView import MainWindow\r\nfrom Model.Equation_Solver import Function\r\nimport sympy as sp\r\n\r\nclass BisectionController:\r\n    def __init__(self, app):\r\n        self.app = app\r\n        self.ventana = MainWindow()\r\n        self.ventana.show()\r\n\r\n        # Conectar eventos de la interfaz gráfica a la lógica\r\n        self.ventana.button_calcular.clicked.connect(self.calcular)\r\n        self.ventana.button_graficar.clicked.connect(self.graficar)\r\n        self.ventana.button_volverMenu.clicked.connect(self.return_to_menu)\r\n        self.ventana.button_a.clicked.connect(self.help)\r\n\r\n        # Crear una instancia del solucionador de la ecuación\r\n        self.solver = Bisection_Method()\r\n\r\n    def calcular(self):\r\n        try:\r\n            expression_function = self.ventana.edit_ecuacion.text()\r\n            error = float(self.ventana.edit_error.text())\r\n            xi_minus_1 = float(self.ventana.edit_a.text())\r\n            xi = float(self.ventana.edit_b.text())\r\n\r\n            # Verificar si la expresión es una función válida\r\n            if not self.is_valid_function(expression_function):\r\n                raise ValueError(\"La expresión ingresada no es una función válida.\")\r\n\r\n            # Limpiar la tabla antes de agregar nuevos resultados\r\n            self.ventana.tabla_resultados.clearContents()\r\n            self.ventana.tabla_resultados.setRowCount(0)\r\n\r\n            # Inicializar el solucionador con los valores ingresados\r\n            #self.solver.init(expression_function, error, xi_minus_1, xi)\r\n\r\n            # Resolver la ecuación y obtener los resultados\r\n            solver_results, error_message = self.solver.iteration(expression_function, error, xi_minus_1, xi)\r\n\r\n            # Agregar los resultados a la tabla\r\n            for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1,f_xi_plus_1, error) in enumerate(solver_results):\r\n                self.ventana.tabla_resultados.insertRow(i)\r\n                self.ventana.tabla_resultados.setItem(i, 0, QtWidgets.QTableWidgetItem(str(xi_minus_1)))\r\n                self.ventana.tabla_resultados.setItem(i, 1, QtWidgets.QTableWidgetItem(str(xi)))\r\n                self.ventana.tabla_resultados.setItem(i, 2, QtWidgets.QTableWidgetItem(str(f_xi_minus_1)))\r\n                self.ventana.tabla_resultados.setItem(i, 3, QtWidgets.QTableWidgetItem(str(f_xi)))\r\n                self.ventana.tabla_resultados.setItem(i, 4, QtWidgets.QTableWidgetItem(str(xi_plus_1)))\r\n                self.ventana.tabla_resultados.setItem(i, 5, QtWidgets.QTableWidgetItem(str(f_xi_plus_1)))\r\n                self.ventana.tabla_resultados.setItem(i, 6, QtWidgets.QTableWidgetItem(str(error)))\r\n\r\n            # Mostrar el último resultado en el campo de texto\r\n            if solver_results:\r\n                self.ventana.edit_resultado.setText(str(solver_results[-1][4]))\r\n            else:\r\n                # No se pudieron calcular resultados, por lo que no hay nada que mostrar\r\n                self.ventana.edit_resultado.setStyleSheet(\"color: red;\")  # Color rojo\r\n                self.ventana.edit_resultado.setText(\"No se pudo calcular debido a una entrada inválida.\")\r\n\r\n            if (error_message != None):\r\n                if error_message.startswith(\"Posible divergencia\") or error_message.startswith(\r\n                        \"La función es casi constante\" or error_message.startswith(\"El cálculo de la siguiente\")):\r\n                    # Manejo específico para la excepción de posible divergencia\r\n                    self.ventana.show_error_message(\r\n                        error_message + \"\\n\\nRevisa que tu función y tus valores iniciales sean correctos.\")\r\n                else:\r\n                    # Otros errores\r\n                    self.ventana.show_error_message(\r\n                        \"Error: No es posible resolver la ecuación debido a un problema identificado.\" + \"\\n\\nRevisa que tu función y tus valores iniciales sean correctos.\")\r\n        except ValueError as e:\r\n            # Capturar la excepción de división por cero en la función y mostrar el mensaje de error\r\n            self.ventana.show_error_message(str(e))\r\n\r\n    def is_valid_function(self, expression):\r\n        # Intentar crear una expresión SymPy con la cadena de entrada\r\n        expr = sp.sympify(expression)\r\n        # Verificar si la expresión contiene al menos una variable\r\n        return bool(expr.free_symbols)\r\n\r\n    def graficar(self):\r\n        # Método para graficar la función\r\n        expression_function = self.ventana.edit_ecuacion.text()\r\n        function = Function(expression_function)\r\n\r\n        # Obtener la ruta de la imagen generada\r\n        ruta_imagen = function.plot()\r\n\r\n        # Crear una nueva ventana para mostrar la gráfica\r\n        ventana_grafica = QtWidgets.QMainWindow()\r\n        ventana_grafica.setWindowTitle(\"Gráfica de la función\")\r\n\r\n        # Cargar la imagen y obtener sus dimensiones\r\n        pixmap = QPixmap(ruta_imagen)\r\n        ancho_imagen = pixmap.width()\r\n        alto_imagen = pixmap.height()\r\n\r\n        # Establecer el tamaño de la ventana según las dimensiones de la imagen\r\n        ventana_grafica.setFixedSize(ancho_imagen, alto_imagen)\r\n\r\n        # Crear un widget para mostrar la gráfica\r\n        widget_grafica = QtWidgets.QWidget()\r\n        layout_grafica = QtWidgets.QVBoxLayout()\r\n        widget_grafica.setLayout(layout_grafica)\r\n        ventana_grafica.setCentralWidget(widget_grafica)\r\n\r\n        # Mostrar la imagen en la nueva ventana\r\n        label_grafica = QtWidgets.QLabel()\r\n        label_grafica.setPixmap(pixmap)\r\n        layout_grafica.addWidget(label_grafica)\r\n\r\n        # Mostrar la nueva ventana\r\n        ventana_grafica.show()\r\n\r\n    def return_to_menu(self):\r\n        from MainController import MainController\r\n        self.main_controller = MainController()\r\n        self.main_controller.show_menu()\r\n        self.ventana.close()\r\n\r\n    def help(self):\r\n        help_dialog = QDialog()\r\n        help_dialog.setWindowTitle(\"Manual de Usuario Secante\")\r\n        help_dialog.setFixedSize(650, 400)\r\n\r\n        scroll_area = QScrollArea()\r\n        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)\r\n\r\n        content_widget = QWidget()\r\n        content_layout = QVBoxLayout()\r\n\r\n        layout = QVBoxLayout()\r\n\r\n        # Título\r\n        title_label = QLabel(\"Manual de Usuario Secante\")\r\n        title_label.setStyleSheet(\"font-family: Arial, sans-serif; font-size:14pt;;\")\r\n        content_layout.addWidget(title_label)\r\n\r\n        # Instrucciones\r\n        instructions_label = QLabel(\r\n            \"Verifica inicialmente tu función y valores iniciales (que se llegue a una raíz en el intervalo)\\n\"\r\n            \"para evitar que aparezcan errores. Al final hay un ejemplo de cómo escribir una función.\\n\\n\"\r\n\r\n            \"OPERACIONES ALGEBRAICAS\\n\\n\"\r\n\r\n            \"-Exponentes: x^2 se escibe como x**2\\n\"\r\n            \"-Multiplicacion: x*2\\n\"\r\n            \"-Division: x/2\\n\"\r\n            \"-Suma: x + 2\\n\"\r\n            \"-Resta: x - 2\\n\"\r\n            \"-Raíz Cuadrada: x**(1/2) o con sqrt(x)\\n\"\r\n            \"-Raíz Cúbica: x**(1/3) o con cbrt(x)\\n\"\r\n            \"-Raíz de cuanquier radical: x**(1/n)\\n\"\r\n            \"-Numero e: e^x -> exp(x)\\n\"\r\n            \"-Valor Absoluto: Abs(x)\\n\"\r\n            \"-Factorial: factorial(x)\\n\\n\"\r\n            \"FUNCIONES LOGARÍTMICAS\\n\\n\"\r\n            \"-Logaritmo: log(x,base)\\n\"\r\n            \"-Logaritmo natural: log(x)\\n\\n\"\r\n\r\n            \"FUNCIONES TRIGONOMÉTRICAS\\n\\n\"\r\n\r\n            \"-Seno: sin(x)\\n\"\r\n            \"-Coseno: cos(x)\\n\"\r\n            \"-Tangente: tan(x)\\n\"\r\n            \"-Arcoseno: asin(x)\\n\"\r\n            \"-Arcocoseno: acos(x)\\n\"\r\n            \"-Arcotangente: atan(x)\\n\"\r\n            \"-Cosecante: csc(x)\\n\"\r\n            \"-Secante: sec(x)\\n\"\r\n            \"-Cotangente: cot(x)\\n\"\r\n            \"-Arcocosecante: acsc(x)\\n\"\r\n            \"-Arcosecante: asec(x)\\n\"\r\n            \"-Arcocotangente: acot(x)\\n\\n\"\r\n\r\n            \"FUNCIONES HIPERBOLÍCAS\\n\\n\"\r\n\r\n            \"-Seno hiperbólico: sinh(x)\\n\"\r\n            \"-Coseno hiperbólico: cosh(x)\\n\"\r\n            \"-Tangente hiperbólica: tanh(x)\\n\"\r\n            \"-Arcoseno hiperbólico: asinh(x)\\n\"\r\n            \"-Arcocoseno hiperbólico: acosh(x)\\n\"\r\n            \"-Arcotangente hiperbólica: atanh(x)\\n\\n\"\r\n\r\n            \"FUNCIONES ESPECIALES\\n\\n\"\r\n\r\n            \"-Función Gamma: gamma(x)\\n\"\r\n            \"-Función Beta: beta(x,y)\\n\\n\"\r\n\r\n            \"Nota: Se respeta la prioridad por paréntesis\\n\\n\"\r\n\r\n            \"EJEMPLO.\\n\\n\"\r\n\r\n            \"La ecuación x^4 - 2x^3 - 12x^2 + 16x - 40 se esribe como:\\n\"\r\n            \"\\tx**4 - 2*x**3 - 12*x**2 + 16*x - 40\\n\"\r\n        )\r\n        instructions_label.setStyleSheet(\"font-family: Arial, sans-serif; font-size:11pt;\")\r\n        content_layout.addWidget(instructions_label)\r\n\r\n        # Botón de regresar\r\n        return_button = QPushButton(\"Return\")\r\n        return_button.setStyleSheet(\r\n            \"background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;\")\r\n        return_button.clicked.connect(help_dialog.close)\r\n        content_layout.addWidget(return_button)\r\n        content_widget.setLayout(content_layout)\r\n        scroll_area.setWidget(content_widget)\r\n        layout.addWidget(scroll_area)\r\n\r\n        help_dialog.setLayout(layout)\r\n        help_dialog.exec()\r\n\r\n    def move_window_to_center(self):\r\n        # Mover la ventana al centro de la pantalla\r\n        screen_geometry = QtWidgets.QApplication.primaryScreen().geometry()\r\n        x = (screen_geometry.width() - self.ventana.width()) / 2\r\n        y = (screen_geometry.height() - self.ventana.height()) / 2\r\n        self.ventana.move(x, y)\r\n\r\n    def run(self):\r\n        sys.exit(self.app.exec_())\r\n\r\nif __name__ == '__main__':\r\n    controller = BisectionController()\r\n    controller.run()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Controller/Bisectioncontroller.py b/Controller/Bisectioncontroller.py
+--- a/Controller/Bisectioncontroller.py	(revision ae62683caa8684f65354f4c19e7153885214d65f)
++++ b/Controller/Bisectioncontroller.py	(date 1710954965669)
+@@ -43,8 +43,10 @@
+             #self.solver.init(expression_function, error, xi_minus_1, xi)
+ 
+             # Resolver la ecuación y obtener los resultados
++
+             solver_results, error_message = self.solver.iteration(expression_function, error, xi_minus_1, xi)
+ 
++
+             # Agregar los resultados a la tabla
+             for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1,f_xi_plus_1, error) in enumerate(solver_results):
+                 self.ventana.tabla_resultados.insertRow(i)
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"safe commit, Bisectioncontroller.py reworked\">\r\n      <change beforePath=\"$PROJECT_DIR$/Model/Bisection_Method.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Model/Bisection_Method.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"master\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2dMRzYcZiMyhFzcHrNC13lpmEXS\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_ADD_EXTERNAL_FILES\": \"true\",\r\n    \"Python.BiseccionView.executor\": \"Run\",\r\n    \"Python.Bisection_Method.executor\": \"Run\",\r\n    \"Python.Equation_Solver.executor\": \"Run\",\r\n    \"Python.Gauss.executor\": \"Run\",\r\n    \"Python.GaussJordan_Controller.executor\": \"Run\",\r\n    \"Python.MainController.executor\": \"Run\",\r\n    \"Python.SecantMethod.executor\": \"Run\",\r\n    \"Python.SecantView.executor\": \"Run\",\r\n    \"Python.Secant_Controller.executor\": \"Run\",\r\n    \"Python.main.executor\": \"Run\",\r\n    \"Python.test.executor\": \"Run\",\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"git-widget-placeholder\": \"master\",\r\n    \"last_opened_file_path\": \"C:/Users/luis5/PycharmProjects/gaussJordan\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"settings.editor.selected.configurable\": \"com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\luis5\\PycharmProjects\\NumMet\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"653ad0f7-918b-4490-bd7b-feaac0f68b33\" name=\"Changes\" comment=\"\" />\r\n      <created>1709816224229</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1709816224229</updated>\r\n      <workItem from=\"1709816235551\" duration=\"1022000\" />\r\n      <workItem from=\"1709831463985\" duration=\"23000\" />\r\n      <workItem from=\"1709832173995\" duration=\"846000\" />\r\n      <workItem from=\"1710209591103\" duration=\"993000\" />\r\n      <workItem from=\"1710233790481\" duration=\"6344000\" />\r\n      <workItem from=\"1710515251428\" duration=\"1997000\" />\r\n      <workItem from=\"1710638831222\" duration=\"2810000\" />\r\n      <workItem from=\"1710698701469\" duration=\"5597000\" />\r\n      <workItem from=\"1710862603005\" duration=\"2709000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Exception Handling in Secante\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1710722496733</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1710722496733</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"safe commit, Bisectioncontroller.py reworked\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1710893648634</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1710893648634</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"3\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n    <MESSAGE value=\"safe commit, Bisectioncontroller.py\" />\r\n    <MESSAGE value=\"safe commit, Bisectioncontroller.py reworked\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"safe commit, Bisectioncontroller.py reworked\" />\r\n  </component>\r\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\r\n    <SUITE FILE_PATH=\"coverage/NumMet$MainModel.coverage\" NAME=\"MainModel Coverage Results\" MODIFIED=\"1709835017577\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$BiseccionView.coverage\" NAME=\"BiseccionView Coverage Results\" MODIFIED=\"1710635573141\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Bisection_Method.coverage\" NAME=\"Bisection_Method Coverage Results\" MODIFIED=\"1710892716358\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$SecantMethod.coverage\" NAME=\"SecantMethod Coverage Results\" MODIFIED=\"1710719634441\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$GaussJordan_Controller.coverage\" NAME=\"GaussJordan_Controller Coverage Results\" MODIFIED=\"1710785688748\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Controller\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Equation_Solver.coverage\" NAME=\"Equation_Solver Coverage Results\" MODIFIED=\"1710469430637\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$SecantView.coverage\" NAME=\"SecantView Coverage Results\" MODIFIED=\"1710637595593\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$MainController.coverage\" NAME=\"MainController Coverage Results\" MODIFIED=\"1710893826756\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$main.coverage\" NAME=\"main Coverage Results\" MODIFIED=\"1709832569064\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Modules\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$test.coverage\" NAME=\"test Coverage Results\" MODIFIED=\"1710239585671\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Model\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Secant_Controller.coverage\" NAME=\"Secant_Controller Coverage Results\" MODIFIED=\"1710785415846\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/Controller\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$MenuMethodsWiindow.coverage\" NAME=\"MenuMethodsWiindow Coverage Results\" MODIFIED=\"1710786011570\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n    <SUITE FILE_PATH=\"coverage/NumMet$Gauss.coverage\" NAME=\"Gauss Coverage Results\" MODIFIED=\"1710240161091\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"coverage.py\" COVERAGE_BY_TEST_ENABLED=\"true\" COVERAGE_TRACING_ENABLED=\"false\" WORKING_DIRECTORY=\"$PROJECT_DIR$/View\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision ae62683caa8684f65354f4c19e7153885214d65f)
++++ b/.idea/workspace.xml	(date 1710955449238)
+@@ -4,8 +4,12 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="safe commit, Bisectioncontroller.py reworked">
++    <list default="true" id="653ad0f7-918b-4490-bd7b-feaac0f68b33" name="Changes" comment="alfa commit, Bisectioncontroller.py reworked 2.0">
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Controller/Bisectioncontroller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Controller/Bisectioncontroller.py" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Model/Bisection_Method.py" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Bisection_Method.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/View/BiseccionView.py" beforeDir="false" afterPath="$PROJECT_DIR$/View/BiseccionView.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/grafica.png" beforeDir="false" afterPath="$PROJECT_DIR$/grafica.png" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -41,33 +45,33 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ASKED_ADD_EXTERNAL_FILES": "true",
+-    "Python.BiseccionView.executor": "Run",
+-    "Python.Bisection_Method.executor": "Run",
+-    "Python.Equation_Solver.executor": "Run",
+-    "Python.Gauss.executor": "Run",
+-    "Python.GaussJordan_Controller.executor": "Run",
+-    "Python.MainController.executor": "Run",
+-    "Python.SecantMethod.executor": "Run",
+-    "Python.SecantView.executor": "Run",
+-    "Python.Secant_Controller.executor": "Run",
+-    "Python.main.executor": "Run",
+-    "Python.test.executor": "Run",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "git-widget-placeholder": "master",
+-    "last_opened_file_path": "C:/Users/luis5/PycharmProjects/gaussJordan",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
++    &quot;Python.BiseccionView.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Bisection_Method.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Equation_Solver.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Gauss.executor&quot;: &quot;Run&quot;,
++    &quot;Python.GaussJordan_Controller.executor&quot;: &quot;Run&quot;,
++    &quot;Python.MainController.executor&quot;: &quot;Run&quot;,
++    &quot;Python.SecantMethod.executor&quot;: &quot;Run&quot;,
++    &quot;Python.SecantView.executor&quot;: &quot;Run&quot;,
++    &quot;Python.Secant_Controller.executor&quot;: &quot;Run&quot;,
++    &quot;Python.main.executor&quot;: &quot;Run&quot;,
++    &quot;Python.test.executor&quot;: &quot;Run&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/Users/luis5/PycharmProjects/gaussJordan&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RecentsManager">
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="C:\Users\luis5\PycharmProjects\NumMet" />
+@@ -76,7 +80,7 @@
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+-        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
++        <option value="bundled-python-sdk-d68999036c7f-b11f5e8da5ad-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.14475.56" />
+       </set>
+     </attachedChunks>
+   </component>
+@@ -97,6 +101,7 @@
+       <workItem from="1710638831222" duration="2810000" />
+       <workItem from="1710698701469" duration="5597000" />
+       <workItem from="1710862603005" duration="2709000" />
++      <workItem from="1710947575523" duration="4699000" />
+     </task>
+     <task id="LOCAL-00001" summary="Exception Handling in Secante">
+       <option name="closed" value="true" />
+@@ -114,7 +119,23 @@
+       <option name="project" value="LOCAL" />
+       <updated>1710893648634</updated>
+     </task>
+-    <option name="localTasksCounter" value="3" />
++    <task id="LOCAL-00003" summary="safe commit, Bisectioncontroller.py reworked again">
++      <option name="closed" value="true" />
++      <created>1710894096372</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1710894096372</updated>
++    </task>
++    <task id="LOCAL-00004" summary="alfa commit, Bisectioncontroller.py reworked 2.0">
++      <option name="closed" value="true" />
++      <created>1710894157888</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1710894157888</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -135,17 +156,19 @@
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+     <MESSAGE value="safe commit, Bisectioncontroller.py" />
+     <MESSAGE value="safe commit, Bisectioncontroller.py reworked" />
+-    <option name="LAST_COMMIT_MESSAGE" value="safe commit, Bisectioncontroller.py reworked" />
++    <MESSAGE value="safe commit, Bisectioncontroller.py reworked again" />
++    <MESSAGE value="alfa commit, Bisectioncontroller.py reworked 2.0" />
++    <option name="LAST_COMMIT_MESSAGE" value="alfa commit, Bisectioncontroller.py reworked 2.0" />
+   </component>
+   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+     <SUITE FILE_PATH="coverage/NumMet$MainModel.coverage" NAME="MainModel Coverage Results" MODIFIED="1709835017577" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$BiseccionView.coverage" NAME="BiseccionView Coverage Results" MODIFIED="1710635573141" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-    <SUITE FILE_PATH="coverage/NumMet$Bisection_Method.coverage" NAME="Bisection_Method Coverage Results" MODIFIED="1710892716358" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
++    <SUITE FILE_PATH="coverage/NumMet$Bisection_Method.coverage" NAME="Bisection_Method Coverage Results" MODIFIED="1710952845588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$SecantMethod.coverage" NAME="SecantMethod Coverage Results" MODIFIED="1710719634441" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$GaussJordan_Controller.coverage" NAME="GaussJordan_Controller Coverage Results" MODIFIED="1710785688748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />
+     <SUITE FILE_PATH="coverage/NumMet$Equation_Solver.coverage" NAME="Equation_Solver Coverage Results" MODIFIED="1710469430637" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$SecantView.coverage" NAME="SecantView Coverage Results" MODIFIED="1710637595593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/View" />
+-    <SUITE FILE_PATH="coverage/NumMet$MainController.coverage" NAME="MainController Coverage Results" MODIFIED="1710893826756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
++    <SUITE FILE_PATH="coverage/NumMet$MainController.coverage" NAME="MainController Coverage Results" MODIFIED="1710954965699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+     <SUITE FILE_PATH="coverage/NumMet$main.coverage" NAME="main Coverage Results" MODIFIED="1709832569064" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Modules" />
+     <SUITE FILE_PATH="coverage/NumMet$test.coverage" NAME="test Coverage Results" MODIFIED="1710239585671" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Model" />
+     <SUITE FILE_PATH="coverage/NumMet$Secant_Controller.coverage" NAME="Secant_Controller Coverage Results" MODIFIED="1710785415846" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Controller" />

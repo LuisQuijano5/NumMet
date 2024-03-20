@@ -43,7 +43,9 @@ class BisectionController:
             #self.solver.init(expression_function, error, xi_minus_1, xi)
 
             # Resolver la ecuación y obtener los resultados
+
             solver_results, error_message = self.solver.iteration(expression_function, error, xi_minus_1, xi)
+
 
             # Agregar los resultados a la tabla
             for i, (xi_minus_1, xi, f_xi_minus_1, f_xi, xi_plus_1,f_xi_plus_1, error) in enumerate(solver_results):

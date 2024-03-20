@@ -120,6 +120,9 @@ class MainWindow(QtWidgets.QMainWindow):
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 
+    def show_error_message(self, error_message):
+        QtWidgets.QMessageBox.critical(self, "Error", error_message)
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     ventana = MainWindow()
