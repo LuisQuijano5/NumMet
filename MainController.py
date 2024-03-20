@@ -8,7 +8,9 @@ from View.MainWindow import MainWindow
 from View.MenuMethodsWiindow import MainWindowMenu
 from Controller.GaussJordan_Controller import GaussJordanController
 from Controller.Secant_Controller import SecantController
-from Controller .SeidelController import SeidelController
+from Controller.SeidelController import SeidelController
+from Controller.Bisectioncontroller import BisectionController
+
 
 
 class MainController(QMainWindow):
@@ -45,7 +47,9 @@ class MainController(QMainWindow):
         self.menu.close()
         # Mostrar la ventana correspondiente al método seleccionado
         if metodo == "Bisección":
-            # Lógica para la bisección
+            self.secant_controller = BisectionController(self)
+            self.secant_controller.ventana.show()
+            self.secant_controller.move_window_to_center()
             pass
         elif metodo == "Secante":
             self.secant_controller = SecantController(self)

@@ -1,7 +1,5 @@
-#from .Equation_Solver import Function
 import sympy as sym
 
-#from View.BiseccionView import MainWindow
 
 
 class Bisection_Method():
@@ -41,7 +39,7 @@ class Bisection_Method():
                 #error frame calculus
                 if(self.Xrminus1!=None):
                     self.calculatederror=(abs((self.Xr-self.Xrminus1)/self.Xr))*100
-                else:self.calculatederror=100
+                else:self.calculatederror=100.00
 
                 self.Xrminus1 = self.Xr
                 self.flag = self.FXr * self.Fa
@@ -56,19 +54,19 @@ class Bisection_Method():
             except ValueError as e:
                 error_message = str(e)
 
-            print("b=" + str(self.b))
-            print("a=" + str(self.a))
-            print("fa=" + str(self.Fa))
-            print("fb=" + str(self.Fb))
-            print("xr=" + str(self.Xr))
-            print("fxr=" + str(self.FXr))
-            print("flag=" + str(self.flag))
+        print("b=" + str(self.b))
+        print("a=" + str(self.a))
+        print("fa=" + str(self.Fa))
+        print("fb=" + str(self.Fb))
+        print("xr=" + str(self.Xr))
+        print("fxr=" + str(self.FXr))
+        print("flag=" + str(self.flag))
 
             #here we save the rest of the variables on the table (the loop starts again)
-            return results, error_message
+        return results, error_message
 
 
 
-#some tests
+#some testsresult = sympy.N(result, 7)
 #test=Bisection_Method()
 #test.iteration()
