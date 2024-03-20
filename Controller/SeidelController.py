@@ -2,7 +2,7 @@ import sys
 
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea, QHBoxLayout
+from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea, QHBoxLayout, QDialog
 
 from Model.GaussSeidelModel import gauss_seidel
 from View.SeidelView import MainWindow
@@ -52,13 +52,71 @@ class SeidelController:
         self.view.stacked_layout.addWidget(self.scroll_area)
 
         self.view.show()
-        sys.exit(self.app.exec())
+
 
     def help(self):
-        print("hola erick aqui lo del manual :)")
+        help_dialog = QDialog()
+        help_dialog.setWindowTitle("Manual de Usuario Gauss-Jordan")
+        help_dialog.setFixedSize(800, 500)
+
+        scroll_area = QScrollArea()
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+
+        layout = QVBoxLayout()
+
+        # Título
+        title_label = QLabel("Manual de Usuario Gauss-Jordan")
+        title_label.setStyleSheet("font-family: Arial, sans-serif; font-size:14pt;;")
+        content_layout.addWidget(title_label)
+
+        # Instrucciones
+        instructions_label = QLabel(
+            "Funcionamiento:\n"
+            "Esta ventana permite solucionar matrices con soluciones únicas, es decir, aquellas en las que hay\n "
+            "el mismo número de ecuaciones que de variables y que cada variable aparece por lo menos en una ecuación.\n\n"
+            "Puedes modificar la cantidad de variables o ecuaciones usando la casilla 'Number of variables',\n "
+            "acepta valores enteros entre 2 a 26 y genera automáticamente la cantidad de casillas necesarias para\n "
+            "escribir las matrices.\n\n"
+            "El recuadro inicial contiene las 'casillas' para poner los coeficientes de cada variable en cada ecuación,\n "
+            "acepta valores de 3 decimales de entre -1000 a 1000. Recuerda llenar el resultado también y usar ',' para \n"
+            "los decimales.\n""Para acceder a su llenado se debe dar click en ellos, o en su defecto usar las flechas para \n"
+            "aumentar o disminuir en una unidad.\n\n"
+            "La tecla Tab puedes moverte de casillas\n\n"
+            "El 'botón clean' regresará las casillas de coeficientes a 0.\n\n"
+            "El 'botón solve' mostrará otra vista en la misma ventana donde se encontrará el proceso seguido por matrices\n "
+            "y el resultado.Para regresar solo presiona el botón return que aparecerá hasta arriba.\n\n"
+            "Consideraciones:\n"
+            "El programa mostrará 6 decimales en resultados.\n"
+            "En caso de ser necesario el programa adicionará barras de desplazamiento para observar el contenido completo.\n"
+            "En caso de haber colocado en desorden las ecuaciones, el programa se encargará de ordenarlo para su solución.\n"
+            "En caso de no colocar por lo menos en una ecuación una variable el programa te mostrará una advertencia.\n"
+            "En caso de dejar una ecuación en ceros, el programa mostrará una advertencia.\n"
+            "Ingresar un valor mayor a 0 para el error permitido.\n"
+        )
+        instructions_label.setStyleSheet("font-family: Arial, sans-serif; font-size:11pt;")
+        content_layout.addWidget(instructions_label)
+
+        # Botón de regresar
+        return_button = QPushButton("Volver")
+        return_button.setStyleSheet(
+            "background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;")
+        return_button.clicked.connect(help_dialog.close)
+        content_layout.addWidget(return_button)
+        content_widget.setLayout(content_layout)
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
+
+        help_dialog.setLayout(layout)
+        help_dialog.exec()
 
     def return_to_menu(self):
-        print("hola erick aqui cierras esta venta y que se abra menu")
+        from MainController import MainController
+        self.main_controller = MainController()
+        self.main_controller.show_menu()
+        self.view.close()
 
     def updateCols(self, cols):
         if self.cols != cols and cols >= 2 and cols < 100:
@@ -85,8 +143,8 @@ class SeidelController:
     def check_row(self, row):
         for i in row:
             if i != 0: return True
-        self.view.warning("Please enter at least one value diff from zero in each equation.\n"
-                          "The table will be restored")
+        self.view.warning("Por Favor Ingresa al menos un valor diferente de cero en cada ecuacion.\n"
+                          "La tabla se limpiara")
         self.rebuild()
         return False
 

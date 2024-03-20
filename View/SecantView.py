@@ -107,6 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Widget central
         central_widget = QtWidgets.QWidget()
+        central_widget.setObjectName("SecantView")
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 

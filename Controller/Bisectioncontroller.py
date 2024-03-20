@@ -74,7 +74,7 @@ class BisectionController:
                     # Otros errores
                     self.ventana.show_error_message(
                         "Error: No es posible resolver la ecuación debido a un problema identificado." + "\n\nRevisa que tu función y tus valores iniciales sean correctos.")
-        except ValueError as e:
+        except Exception as e:
             # Capturar la excepción de división por cero en la función y mostrar el mensaje de error
             self.ventana.show_error_message(str(e))
 

@@ -23,6 +23,7 @@ class MainWindowMenu(QtWidgets.QMainWindow):
         # Etiqueta "Seleccione una opción"
         label_opcion = QtWidgets.QLabel("Seleccione un Metodo")
         label_opcion.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        label_opcion.setObjectName("label_opcion")
         layout.addWidget(label_opcion)
 
         # Crear QGroupBox
@@ -69,6 +70,7 @@ class MainWindowMenu(QtWidgets.QMainWindow):
 
         # Widget central
         central_widget = QtWidgets.QWidget()
+        central_widget.setObjectName("MenuWindow")
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
 

@@ -1,18 +1,9 @@
-"""
-to do:
-resize window when less eq
-format solution when a list is returned
-"""
-
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QVBoxLayout, QLabel, QWidget, QPushButton, QScrollArea, QHBoxLayout, QDialog
 
 from Model.test import gauss_jordan
 from View.Gauss import MainWindow
-
-
-
 
 class MatrixWidget(QWidget):
     def __init__(self, matrix):
@@ -60,8 +51,6 @@ class GaussJordanController:
 
         self.view.show()
 
-        #sys.exit(self.app.exec())
-
     def help(self):
         help_dialog = QDialog()
         help_dialog.setWindowTitle("Manual de Usuario Gauss-Jordan")
@@ -92,6 +81,7 @@ class GaussJordanController:
             "acepta valores de 3 decimales de entre -1000 a 1000. Recuerda llenar el resultado también y usar ',' para \n"
             "los decimales.\n""Para acceder a su llenado se debe dar click en ellos, o en su defecto usar las flechas para \n"
             "aumentar o disminuir en una unidad.\n\n"
+            "La tecla Tab puedes moverte de casillas\n\n"
             "El 'botón clean' regresará las casillas de coeficientes a 0.\n\n"
             "El 'botón solve' mostrará otra vista en la misma ventana donde se encontrará el proceso seguido por matrices\n "
             "y el resultado.Para regresar solo presiona el botón return que aparecerá hasta arriba.\n\n"
@@ -106,7 +96,7 @@ class GaussJordanController:
         content_layout.addWidget(instructions_label)
 
         # Botón de regresar
-        return_button = QPushButton("Return")
+        return_button = QPushButton("Volver")
         return_button.setStyleSheet("background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;")
         return_button.clicked.connect(help_dialog.close)
         content_layout.addWidget(return_button)

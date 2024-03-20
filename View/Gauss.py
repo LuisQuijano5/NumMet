@@ -23,6 +23,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         central_widget = QWidget()
         central_widget.setContentsMargins(0, 0, 0, 0)
+        central_widget.setObjectName("GaussWidget")
         #central_widget.setGeometry(300, 300, 600, 600)
         central_widget.setLayout(self.stacked_layout)
         self.setCentralWidget(central_widget)
@@ -152,7 +153,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.controller.spin_matrix.append(spin_aux)
 
         container = QWidget()
-        container.setObjectName('container_main')
+        container.setObjectName("container_main")
         container.setLayout(layout)
         scroll_area.setWidget(container)
         #scroll_area.setGeometry(100, 100, 800, 800)

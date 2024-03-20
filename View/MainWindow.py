@@ -7,7 +7,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __init__ (self):
         super().__init__()
-        self.setWindowTitle('Metodos Numericos')
+        self.setWindowTitle("METODOS NUMERICOS")
         self.setGeometry(100, 100, 800, 600)
 
         # Cargar los estilos CSS
@@ -19,21 +19,25 @@ class MainWindow(QtWidgets.QMainWindow):
 
         layout = QtWidgets.QVBoxLayout()
 
-        label_app_name = QtWidgets.QLabel('Metodos Numericos')
+        label_app_name = QtWidgets.QLabel("METODOS NUMERICOS")
         label_app_name.setAlignment(QtCore.Qt.AlignCenter)
+        label_app_name.setObjectName("label_app_name")
         layout.addWidget(label_app_name)
 
-        creators = ["CREADO POR:","Jorge Laurencio Sanchez Rojas", "Emiliano Rebolledo Navarrete", "Luis Angel Quijano Guerrero", "Ulises Andrade Gonzalez", "Erick Martín Morin López"]
+        creators = ["Creado por:","Jorge Laurencio Sanchez Rojas", "Emiliano Rebolledo Navarrete", "Luis Angel Quijano Guerrero", "Ulises Andrade Gonzalez", "Erick Martín Morin López"]
         for creator in creators:
             label_creator = QtWidgets.QLabel(creator)
             layout.addWidget(label_creator)
             label_creator.setAlignment(QtCore.Qt.AlignCenter)
+            label_creator.setObjectName("label_creator")
 
         self.button_siguiente = QtWidgets.QPushButton("Siguiente")
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.button_siguiente)
         button_layout.setAlignment(QtCore.Qt.AlignCenter)
         layout.addLayout(button_layout)
+
+
 
         central_widget = QtWidgets.QWidget()
         central_widget.setObjectName("Window")
