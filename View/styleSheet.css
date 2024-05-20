@@ -1,0 +1,71 @@
+
+
+#Window {
+    background-color: rgba(177, 177, 238, 0.62);
+}
+
+#MenuWindow
+{
+    background-color: rgba(168, 203, 248, 0.65);
+}
+
+#Biseccion
+{
+    background-color: rgba(243, 224, 220, 0.59);
+}
+#SecantView
+{
+    background-color: rgba(243, 224, 220, 0.59);
+}
+#SeidelView
+{
+    background-color: rgba(243, 224, 220, 0.59);
+}
+#GaussWidget{
+    background-color: rgba(243, 224, 220, 0.59);
+}
+
+/*#container_main{
+    background-color: rgba(243, 224, 220, 0.59);
+}*/
+
+#label_app_name
+{
+    color: #000000;
+    font-size: 35px;
+}
+
+#label_opcion
+{
+    font-size: 25px;
+    font-family: "Segoe UI Emoji", fantasy;
+}
+
+#layout_box{
+    background-color: #4CAF50;
+}
+
+
+QLabel {
+    font-family: "Segoe UI Emoji", fantasy;
+    font-size: 20px;
+}
+/* Siguiente button */
+QPushButton {
+    background-color: #4CAF50;
+    font-size: 14px;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+QPushButton:hover {
+    background-color: #3e8e41; /* Darker green on hover */
+}
+
+QRadioButton
+{
+    font-family: "Segoe UI Emoji", fantasy;
+    font-size: 18px;
+}
