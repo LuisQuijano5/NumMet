@@ -10,7 +10,9 @@ from Controller.GaussJordan_Controller import GaussJordanController
 from Controller.Secant_Controller import SecantController
 from Controller.SeidelController import SeidelController
 from Controller.Bisectioncontroller import BisectionController
-
+from Controller.RegresionCuadraticaController import RegresionCuadraticaController
+from Controller.InterpolacionLinealController import InterpolacionLinealController
+from Controller.DiferenciasDivController import InterpolacionDiferenciasDivididasController
 
 
 class MainController(QMainWindow):
@@ -41,6 +43,12 @@ class MainController(QMainWindow):
             self.ejecutar_metodo("Gauss-Jordan")
         elif self.menu.opcion_4.isChecked():
             self.ejecutar_metodo("Gauss-Seidel")
+        elif self.menu.opcion_5.isChecked():
+            self.ejecutar_metodo("Regresion Cuadratica")
+        elif self.menu.opcion_6.isChecked():
+            self.ejecutar_metodo("Interpolacion Lineal")
+        elif self.menu.opcion_7.isChecked():
+            self.ejecutar_metodo("Interpolacion Diferencias Divididas")
 
     def ejecutar_metodo(self, metodo):
         # Cerrar el menú principal
@@ -66,8 +74,21 @@ class MainController(QMainWindow):
             self.controller_seidel.view.show()
 
             pass
-
-
+        elif metodo == "Regresion Cuadratica":
+            self.controller_regresion_cuadratica = RegresionCuadraticaController(self)
+            self.controller_regresion_cuadratica.ventana.show()
+            self.controller_regresion_cuadratica.move_window_to_center()
+            pass
+        elif metodo == "Interpolacion Lineal":
+            self.controller_lineal = InterpolacionLinealController(self)
+            self.controller_lineal.ventana.show()
+            self.controller_lineal.move_window_to_center()
+            pass
+        elif metodo == "Interpolacion Diferencias Divididas":
+            self.controller_divididas = InterpolacionDiferenciasDivididasController (self)
+            self.controller_divididas.ventana.show()
+            self.controller_divididas.move_window_to_center()
+            pass
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

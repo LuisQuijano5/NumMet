@@ -40,18 +40,27 @@ class MainWindowMenu(QtWidgets.QMainWindow):
         self.opcion_2 = QtWidgets.QRadioButton("Metodo Secante")
         self.opcion_3 = QtWidgets.QRadioButton("Metodo Gauss-Jordan")
         self.opcion_4 = QtWidgets.QRadioButton("Metodo Gauss-Seidel")
+        self.opcion_5 = QtWidgets.QRadioButton("Regresion Cuadratica")
+        self.opcion_6 = QtWidgets.QRadioButton("Interpolacion Lineal")
+        self.opcion_7 = QtWidgets.QRadioButton("Interpolacion Diferencias Divididas")
 
         # Agregar opciones al grupo
         self.grupo_opciones.addButton(self.opcion_1)
         self.grupo_opciones.addButton(self.opcion_2)
         self.grupo_opciones.addButton(self.opcion_3)
         self.grupo_opciones.addButton(self.opcion_4)
+        self.grupo_opciones.addButton(self.opcion_5)
+        self.grupo_opciones.addButton(self.opcion_6)
+        self.grupo_opciones.addButton(self.opcion_7)
 
         # Agregar opciones al layout interno
         layout_box.addWidget(self.opcion_1)
         layout_box.addWidget(self.opcion_2)
         layout_box.addWidget(self.opcion_3)
         layout_box.addWidget(self.opcion_4)
+        layout_box.addWidget(self.opcion_5)
+        layout_box.addWidget(self.opcion_6)
+        layout_box.addWidget(self.opcion_7)
         layout_box.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout_box.setSpacing(30)
 
