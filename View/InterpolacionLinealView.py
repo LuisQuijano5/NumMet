@@ -119,8 +119,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Boton Calcular
         self.button_calcular = QtWidgets.QPushButton('Calcular')
+        self.button_limpiar = QtWidgets.QPushButton('Limpiar')
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.button_calcular)
+        button_layout.addWidget(self.button_limpiar)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
 
         layout.addLayout(button_layout)
@@ -163,6 +165,20 @@ class MainWindow(QtWidgets.QMainWindow):
         central_widget.setObjectName("Biseccion")
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+        # Conectar botón limpiar con su funcionalidad
+        self.button_limpiar.clicked.connect(self.limpiar_campos)
+
+    def limpiar_campos(self):
+        # Limpiar todos los campos de entrada y resultados
+        self.edit_x_IL.clear()
+        self.edit_fx_IL.clear()
+        self.edit_x0_IL.clear()
+        self.edit_fx0_IL.clear()
+        self.edit_x1_IL.clear()
+        self.edit_fx1_IL.clear()
+        self.edit_resultado.clear()
+        self.edit_error.clear()
 
     def show_error_message(self, error_message):
         QtWidgets.QMessageBox.critical(self, "Error", error_message)
