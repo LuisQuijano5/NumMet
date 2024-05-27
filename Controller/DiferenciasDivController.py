@@ -37,6 +37,18 @@ class InterpolacionDiferenciasDivididasController:
         return editor
 
     def calcular(self):
+
+        # Obtener el valor de X ingresado en el campo correspondiente
+        valor_x = self.ventana.edit_X.text()
+        print("Valor de X ingresado:", valor_x)
+
+        # Lo siguiente es un ejemplo de como mandar los valores a los texfield de resultados
+        # realice una operacion para que se pudiera entender mejor
+        # (los resultados solo se ven hasta que se da click en el boton de calcular)
+        resultado = 1 + 3
+        # Asignar los resultados a los textfields correspondientes
+        self.ventana.edit_resultado.setText(str(resultado))
+
         # Obtener los valores de x e y
         x_values, y_values = self.obtener_valores()
 

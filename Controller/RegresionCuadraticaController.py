@@ -37,6 +37,18 @@ class RegresionCuadraticaController:
         return editor
 
     def calcular(self):
+
+        #Lo siguiente es un ejemplo de como mandar los valores a los texfield de resultados
+        #realice una operacion para que se pudiera entender mejor
+        #(los resultados solo se ven hasta que se da click en el boton de calcular)
+        resultado = 1 + 3
+        coeficiente_correlacion = 0.85
+
+        # Asignar los resultados a los textfields correspondientes
+        self.ventana.edit_resultado.setText(str(resultado))
+        self.ventana.edit_coef.setText(str(coeficiente_correlacion))
+
+        # Lo siguiente son ejemplos de manejo de los arreglos de numeros X y Y
         # Obtener los valores de x e y
         x_values, y_values = self.obtener_valores()
 
