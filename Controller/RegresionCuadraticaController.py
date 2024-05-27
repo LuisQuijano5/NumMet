@@ -1,6 +1,7 @@
 import sys
 from PySide6 import QtWidgets, QtGui, QtCore
 from View.RegresionCuadraticaView import MainWindow
+from Model.QuadraticRegression_Method import LinealRegression
 
 
 class RegresionCuadraticaController:
@@ -56,6 +57,8 @@ class RegresionCuadraticaController:
         if not x_values or not y_values:
             self.ventana.show_error_message("Por favor, complete todas las casillas de la tabla.")
             return
+
+        r,ec=LinealRegression.iterate(x_values,y_values)
 
         # Ejemplo de como es el formato de los valores
         print("Valores de x en calcular:", x_values)
