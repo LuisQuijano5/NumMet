@@ -1,6 +1,7 @@
 import sys
 from PySide6 import QtWidgets, QtGui
 from View.InterpolacionDifDivNewtonView import MainWindow
+from Model.InterpolacionDifDivNewtonModel import calcularPunto
 
 
 class InterpolacionDiferenciasDivididasController:
@@ -39,7 +40,7 @@ class InterpolacionDiferenciasDivididasController:
     def calcular(self):
 
         # Obtener el valor de X ingresado en el campo correspondiente
-        valor_x = self.ventana.edit_X.text()
+        valor_x = float(self.ventana.edit_X.text())
         print("Valor de X ingresado:", valor_x)
 
         # Lo siguiente es un ejemplo de como mandar los valores a los texfield de resultados
@@ -50,7 +51,15 @@ class InterpolacionDiferenciasDivididasController:
         self.ventana.edit_resultado.setText(str(resultado))
 
         # Obtener los valores de x e y
-        x_values, y_values = self.obtener_valores()
+        #x_values, y_values = self.obtener_valores()
+
+        x_values = [float(i) for i in self.obtener_valores()[0]]
+
+        y_values = [float(i) for i in self.obtener_valores()[1]]
+
+        valor_y=calcularPunto(x_values, y_values,valor_x)
+
+        self.ventana.edit_resultado.setText(str(valor_y))
 
         # Verificar si hay valores vacíos
         if not x_values or not y_values:
@@ -114,7 +123,7 @@ class InterpolacionDiferenciasDivididasController:
 
     def help(self):
         # Método para mostrar la ayuda
-        QtWidgets.QMessageBox.information(self.ventana, "Ayuda", "Aquí puedes poner la ayuda para el usuario.")
+        QtWidgets.QMessageBox.information(self.ventana, "Ayuda", "")
 
     def move_window_to_center(self):
         # Mover la ventana al centro de la pantalla
