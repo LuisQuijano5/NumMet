@@ -84,10 +84,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Botones "Menú" y "Graficar"
         self.button_menu = QtWidgets.QPushButton('Menú')
-        self.button_graficar = QtWidgets.QPushButton('Graficar')
+        #self.button_graficar = QtWidgets.QPushButton('Graficar')
         button_layout = QtWidgets.QHBoxLayout()
         button_layout.addWidget(self.button_menu)
-        button_layout.addWidget(self.button_graficar)
+        #button_layout.addWidget(self.button_graficar)
         button_layout.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         layout.addLayout(button_layout)
 

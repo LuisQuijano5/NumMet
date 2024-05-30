@@ -49,7 +49,7 @@ def quadratic_regression(x, y):
     equation = f"y = {a:.3f}x^2 + {b:.3f}x + {c:.3f}"
 
     # Calculate predicted values
-    y_pred = np.polyval([a, b, c], x)  # Using NumPy's polyval for convenience
+    y_pred = np.polyval([a, b, c], x)
 
     # Calculate R-squared
     ss_tot = np.sum((y - np.mean(y))**2)

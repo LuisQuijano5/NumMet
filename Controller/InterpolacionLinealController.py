@@ -74,7 +74,8 @@ class InterpolacionLinealController:
 
         # Instrucciones
         instructions_label = QtWidgets.QLabel(
-            "Instrucciones para utilizar la Interpolación Lineal...\n\n"
+            "Instrucciones para utilizar la Interpolación Lineal...\n"
+            "La primera casilla, x, es el valor que se calculara con los otros dos valores, f(x) se usa para el error\n\n"
             "Ejemplo de cómo ingresar los valores:\n\n"
             "x: 1.5\n"
             "f(x): 2.3\n"

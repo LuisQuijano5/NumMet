@@ -1,5 +1,8 @@
 import sys
 from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QPushButton, QDialog, QScrollArea, QWidget, QVBoxLayout, QLabel
+
 from View.RegresionCuadraticaView import MainWindow
 from Model.QuadraticRegression_Method import quadratic_regression
 
@@ -139,7 +142,60 @@ class RegresionCuadraticaController:
 
     def help(self):
         # Método para mostrar la ayuda
-        pass
+        help_dialog = QDialog()
+        help_dialog.setWindowTitle("Manual de Usuario Regresión")
+        help_dialog.setFixedSize(800, 500)
+
+        scroll_area = QScrollArea()
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+
+        content_widget = QWidget()
+        content_layout = QVBoxLayout()
+
+        layout = QVBoxLayout()
+
+        # Título
+        title_label = QLabel("Manual de Usuario Regresión cuadrática")
+        title_label.setStyleSheet("font-family: Arial, sans-serif; font-size:14pt;;")
+        content_layout.addWidget(title_label)
+
+        # Instrucciones
+        instructions_label = QLabel(
+            """
+            Ayuda Regresión Cuadrática, es regresión para exclusivamente m = 2
+            El método pide introducir la tabla de valores de x y f(x) o sea y.
+            Con estos valores el método encuentra los coeficientes necesarios para generar la ecuación además del coef de correlación.
+            
+            La primera casilla, número de renglones, es la cantidad de datos o tuplas o registros que se piensan
+            introducir, o sea n. Al presionar el botón de generar se actualiza el número de renglones
+            ¡Cuidado!, esto borrará los registros que esten en la tabla.
+            
+            Hay que llenar toda la tabla o el método no te permitira calcular correctamente los datos.
+            
+            Una vez todo llenado, presiona calcular para ver los valores resultantes que se encuentran en la parte inferior.
+            y = a la ecuación, r =  coef correlación.
+            
+            Puedes cambiar valores si quieres calcular algo más.
+            
+            Con el botón de menú puedes regresar a seleccionar el método numérico de tu preferencia
+            """
+        )
+        instructions_label.setStyleSheet("font-family: Arial, sans-serif; font-size:11pt;")
+        content_layout.addWidget(instructions_label)
+
+        # Botón de regresar
+        return_button = QPushButton("Volver")
+        return_button.setStyleSheet(
+            "background-color: #4CAF50; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;")
+        return_button.clicked.connect(help_dialog.close)
+        content_layout.addWidget(return_button)
+        content_widget.setLayout(content_layout)
+        scroll_area.setWidget(content_widget)
+        layout.addWidget(scroll_area)
+
+        help_dialog.setLayout(layout)
+        help_dialog.exec()
+
 
     def move_window_to_center(self):
         # Mover la ventana al centro de la pantalla
