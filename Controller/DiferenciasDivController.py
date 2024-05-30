@@ -123,7 +123,20 @@ class InterpolacionDiferenciasDivididasController:
 
     def help(self):
         # Método para mostrar la ayuda
-        QtWidgets.QMessageBox.information(self.ventana, "Ayuda", "")
+        QtWidgets.QMessageBox.information(self.ventana, "Ayuda",
+                                          "Primero ingresa el número de puntos que conoces, después ingresa el valor a\n"
+                                          "interpolar, da clic en 'Generar' para finalmente ingresar los puntos que "
+                                          "se conocen.\n\n"
+                                          
+                                          "Antes de calcular verifica que no queden casillas vacías y que no cometas alguno de los\n"
+                                          "siguientes errores.\n\n"                                          
+                                          
+                                          "ERRORES NO PERMITIDOS\n\n"
+                                          
+                                          "-No se debe ingresar el mismo punto dos veces.\n"
+                                          "-No se debe ingresar valores repetidos de X aunque los valores de Y sean diferentes.\n"                                          
+                                          "-En la lista de puntos conocidos no se debe ingresar el valor de X que se desea calcular.\n"
+                                          )
 
     def move_window_to_center(self):
         # Mover la ventana al centro de la pantalla
