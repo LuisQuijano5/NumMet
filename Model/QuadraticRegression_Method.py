@@ -1,76 +1,59 @@
 import math
-import test
+import numpy as np
+from Model.test import gauss_jordan
 
-#import sympy as sym
-#import numpy as np
+# def quadratic_regression(x, y):
+#
+#     x = np.array(x)
+#     y = np.array(y)
+#
+#     coeffs = np.polyfit(x, y, 2)
+#     a, b, c = coeffs
+#
+#     equation = f"y = {a:.3f}x^2 + {b:.3f}x + {c:.3f}"
+#
+#     y_pred = np.polyval(coeffs, x)
+#
+#     ss_tot = np.sum((y - np.mean(y))**2)
+#     ss_res = np.sum((y - y_pred)**2)
+#     r_squared = 1 - (ss_res / ss_tot)
+#
+#     return equation, r_squared
 
-class LinealRegression():
-    def __init__(self):
-        self.valuestable = []
-        self.xi = None
-        self.yi = None
-        self.ymean=None
-        self.xisqr = None
-        self.xicube = None
-        self.xifourth = None
-        self.xiyi = None
-        self.xi2yi = None
-        self.SR = None
-        self.ST = None
-        self.R=None
-        self.Fx=""
-        #self.flag = 1.00
+def quadratic_regression(x, y):
+    x = np.array(x)
+    y = np.array(y)
+    n = len(x)
 
+    #calculate sums for the normal equations
+    sum_x = np.sum(x)
+    sum_x2 = np.sum(x**2)
+    sum_x3 = np.sum(x**3)
+    sum_x4 = np.sum(x**4)
+    sum_y = np.sum(y)
+    sum_xy = np.sum(x * y)
+    sum_x2y = np.sum(x**2 * y)
 
-    def iterate(self,tablex, tabley):
-        #self.valuestable = table
+    augmented_matrix = np.array([
+        [sum_x4, sum_x3, sum_x2, sum_x2y],
+        [sum_x3, sum_x2, sum_x, sum_xy],
+        [sum_x2, sum_x, n, sum_y]
+    ])
 
-        lenghtx = len(tablex)
-        lenghty = len(tabley)
+    coeffs, _ = gauss_jordan(augmented_matrix)
 
-        for i in lenghtx:
-            self.xi=tablex[i]
+    print(coeffs[:3])
+    a, b, c = coeffs[:3]
 
-        for i in lenghty:
-            self.yi=tabley[i]
+    # Create equation string
+    equation = f"y = {a:.3f}x^2 + {b:.3f}x + {c:.3f}"
 
-        for i in lenghtx:
-            self.xisqr=tablex[i]**2
+    # Calculate predicted values
+    y_pred = np.polyval([a, b, c], x)  # Using NumPy's polyval for convenience
 
-        for i in lenghtx:
-            self.xicube=tablex[i]**3
+    # Calculate R-squared
+    ss_tot = np.sum((y - np.mean(y))**2)
+    ss_res = np.sum((y - y_pred)**2)
+    r_squared = 1 - (ss_res / ss_tot)
 
-        for i in lenghtx:
-            self.xi=tablex[i]**4
-
-        for i in lenghtx:
-            self.xiyi=tablex[i]*tabley[i]
-
-        for i in lenghtx:
-            self.xi2yi=(tablex[i]**2)*tabley[i]
-
-        self.ymean=self.yi/lenghty
-
-        gaussjordantable=[[lenghty,self.xi,self.xisqr,self.yi],
-                          [self.xi,self.xisqr,self.xicube,self.xiyi],
-                          [self.xisqr,self.xicube,self.xifourth,self.xi2yi]]
-
-        self.valuestable=test.gauss_jordan(gaussjordantable)
-
-        self.calculateSTSR(tablex,tabley)
-        self.Fx=str(self.valuestable[0])+"+"+str(self.valuestable[1])+"x+"+str(self.valuestable[2])+"x^2"
-        return self.R, self.Fx
-
-    def calculateSTSR(self,tablex,tabley):
-        #self.Fx.subs(sym.Symbol('x'), x)
-
-        lenghtG= len(tablex)
-
-        for i in lenghtG:
-            self.SR=tabley[i]-self.valuestable[0]-self.valuestable[1]*tablex[i]-self.valuestable[2]*(tablex[i]**2)
-
-
-        for i in lenghtG:
-            self.ST=(tabley[i]-self.ymean)**2
-
-        self.R=math.sqrt((self.ST-self.SR)/self.SR)
+    return equation, math.sqrt(r_squared)

@@ -3,6 +3,7 @@ def gauss_jordan(A):
     n = len(A)
     state = []
 
+
     # Perform elimination
     for i in range(n):
         if A[i][i] == 0:

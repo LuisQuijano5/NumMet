@@ -1,7 +1,7 @@
 import sys
 from PySide6 import QtWidgets, QtGui, QtCore
 from View.RegresionCuadraticaView import MainWindow
-from Model.QuadraticRegression_Method import LinealRegression
+from Model.QuadraticRegression_Method import quadratic_regression
 
 
 class RegresionCuadraticaController:
@@ -13,7 +13,6 @@ class RegresionCuadraticaController:
         # Conectar eventos de la interfaz gráfica a la lógica
         self.ventana.button_generar.clicked.connect(self.generar_renglones)
         self.ventana.button_calcular.clicked.connect(self.calcular)
-        self.ventana.button_graficar.clicked.connect(self.graficar)
         self.ventana.button_menu.clicked.connect(self.return_to_menu)
         self.ventana.button_a.clicked.connect(self.help)
         self.y_values = None
@@ -53,33 +52,52 @@ class RegresionCuadraticaController:
         # Obtener los valores de x e y
         x_values, y_values = self.obtener_valores()
 
+        #si con pytho 12 no les jala comenten lo de arriba y usen esto>
+        # x_values = [float(i) for i in self.obtener_valores()[0]]
+        #
+        # y_values = [float(i) for i in self.obtener_valores()[1]]
+
+
+
         # Verificar si hay valores vacíos
         if not x_values or not y_values:
             self.ventana.show_error_message("Por favor, complete todas las casillas de la tabla.")
             return
 
-        r,ec=LinealRegression.iterate(x_values,y_values)
+        """
+        HERE
+        """
+        eq, sr = quadratic_regression(x_values, y_values)
+        #lc = LinealRegression()
+        #r, ec = lc.iterate(x_values, y_values)
 
-        # Ejemplo de como es el formato de los valores
-        print("Valores de x en calcular:", x_values)
-        print("Valores de y en calcular:", y_values)
-        print("Valor de x_0", x_values[0])
+        # Lo siguiente es un ejemplo de como mandar los valores a los texfield de resultados
+        # realice una operacion para que se pudiera entender mejor
+        # (los resultados solo se ven hasta que se da click en el boton de calcular)
+        resultado = eq
+        coeficiente_correlacion = sr
 
-        # Ejemplo de acceso a valores individuales
-        if x_values and y_values:
-            for i in range(len(x_values)):
-                x_val = x_values[i]
-                y_val = y_values[i]
-                print(f"Valor de x[{i}]:", x_val)
-                print(f"Valor de y[{i}]:", y_val)
+        # Asignar los resultados a los textfields correspondientes
+        self.ventana.edit_resultado.setText(str(resultado))
+        self.ventana.edit_coef.setText(str(coeficiente_correlacion))
 
-        # Aquí puedes agregar lógica adicional que utilice estos valores individuales
-        # Los valores se obtiene hasta que se da click en el boton de calcular, si los ocupan de otra forma me avisan
-        pass
+        # # Ejemplo de como es el formato de los valores
+        # print("Valores de x en calcular:", x_values)
+        # print("Valores de y en calcular:", y_values)
+        # print("Valor de x_0", x_values[0])
+        #
+        # # Ejemplo de acceso a valores individuales
+        # if x_values and y_values:
+        #     for i in range(len(x_values)):
+        #         x_val = x_values[i]
+        #         y_val = y_values[i]
+        #         print(f"Valor de x[{i}]:", x_val)
+        #         print(f"Valor de y[{i}]:", y_val)
+        #
+        # # Aquí puedes agregar lógica adicional que utilice estos valores individuales
+        # # Los valores se obtiene hasta que se da click en el boton de calcular, si los ocupan de otra forma me avisan
+        # pass
 
-    def graficar(self):
-        # Método para manejar la lógica de graficar
-        pass
 
     def obtener_valores(self):
         try:
